@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Test</title>
+    <style>
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 2px solid #ccc;
+            margin: 10px 0;
+        }
+        
+        .tab-content.active {
+            display: block;
+            border-color: #ffd700;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: white;
+        }
+        
+        .tab-btn.active {
+            background: #1e3c72;
+            color: white;
+        }
+        
+        .gallery-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .image-placeholder img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gallery Tab Test</h1>
+    
+    <div class="gallery-tabs">
+        <button class="tab-btn active" data-tab="photos">Photos</button>
+        <button class="tab-btn" data-tab="videos">Videos</button>
+        <button class="tab-btn" data-tab="press">Press Coverage</button>
+    </div>
+    
+    <div class="gallery-content">
+        <div class="tab-content active" id="photos">
+            <h3>Photos Tab</h3>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div class="image-placeholder">
+                        <img src="images/2.jpeg" alt="Test Image 1">
+                        <p>Past Competition Winners</p>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="image-placeholder">
+                        <img src="images/14.jpeg" alt="Test Image 2">
+                        <p>Event Highlights</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="videos">
+            <h3>Videos Tab</h3>
+            <p>This is the videos content. You should see this when clicking Videos tab.</p>
+        </div>
+        
+        <div class="tab-content" id="press">
+            <h3>Press Coverage Tab</h3>
+            <p>This is the press coverage content. You should see this when clicking Press Coverage tab.</p>
+        </div>
+    </div>
+
+    <script>
+        function initGalleryTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            console.log('Gallery tabs initialized:', { tabBtns: tabBtns.length, tabContents: tabContents.length });
+
+            // Set initial state - show first tab by default
+            if (tabContents.length > 0) {
+                // Hide all tab contents first
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show first tab content
+                tabContents[0].classList.add('active');
+                
+                // Set first tab button as active
+                tabBtns[0].classList.add('active');
+                
+                console.log('First tab activated:', tabContents[0].id);
+            }
+
+            tabBtns.forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    const targetTab = btn.getAttribute('data-tab');
+                    console.log('Tab clicked:', targetTab);
+                    
+                    // Remove active class from all tabs and contents
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked tab and corresponding content
+                    btn.classList.add('active');
+                    const targetContent = document.getElementById(targetTab);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                        console.log('Tab content shown:', targetTab);
+                    } else {
+                        console.error('Target content not found:', targetTab);
+                    }
+                });
+            });
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initGalleryTabs);
+    </script>
+</body>
+</html> 
