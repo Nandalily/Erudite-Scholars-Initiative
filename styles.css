@@ -976,6 +976,50 @@ input:focus, textarea:focus, select:focus {
     overflow: hidden;
 }
 
+/* Centered horizontal image strip behind content */
+.hero-strip {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    transform: translateY(-50%);
+    z-index: 1; /* behind .hero-content (z-index:2) and above decorative ::before background */
+    overflow: hidden;
+}
+
+.hero-strip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Scrolling track for images */
+.hero-strip-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    will-change: transform;
+    animation: heroStripScroll var(--hero-strip-duration, 60s) linear infinite;
+}
+
+.hero-strip img {
+    height: 90%;
+    width: auto;
+    object-fit: cover;
+    flex: 0 0 auto;
+    display: block;
+}
+
+@keyframes heroStripScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
 /* Animated Background Overlay */
 .hero::before {
     content: '';
@@ -1036,6 +1080,20 @@ input:focus, textarea:focus, select:focus {
     padding: 0 1.25rem;
     position: relative;
     z-index: 2;
+}
+
+/* Solid blue card behind the transparent content area to mask moving images */
+.hero-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    z-index: -1; /* behind content but above the moving strip */
 }
 
 /* Enhanced Hero Badge */

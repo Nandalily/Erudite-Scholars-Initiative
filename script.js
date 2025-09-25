@@ -1226,6 +1226,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initBackToTop();
     initKeyboardNavigation();
     optimizePerformance();
+
+    // Initialize hero background strip carousel
+    initHeroStripCarousel();
     
     // Load competitions for the welcome page
     loadCompetitionsForWelcomePage();
@@ -1339,6 +1342,73 @@ style.textContent = `
 `;
 
 document.head.appendChild(style); 
+// Hero strip carousel: continuous right-to-left scrolling track
+function initHeroStripCarousel() {
+    const strip = document.querySelector('.hero-strip');
+    if (!strip) return;
+
+    // Create inner container
+    const inner = document.createElement('div');
+    inner.className = 'hero-strip-inner';
+    strip.appendChild(inner);
+
+    // Known image filenames in /images (no FS access in browser); include common set
+    const images = [
+        '2.jpeg','3.jpeg','4.jpeg','5.jpeg','6.jpeg','7.jpeg','8.jpeg','9.jpeg','10.jpeg','11.jpeg','12.jpeg','14.jpeg','15.jpeg','16.jpeg','17.jpeg','18.jpeg','19.jpeg','20.jpeg','33.jpeg','tt.jpeg','ttt.jpeg','Untitled.jpeg','13.png'
+    ].map(name => `images/${name}`);
+
+    // Build a scrolling track with duplicated sequence for seamless loop
+    const track = document.createElement('div');
+    track.className = 'hero-strip-track';
+    inner.appendChild(track);
+
+    const buildSequence = (dest) => {
+        images.forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = '';
+            dest.appendChild(img);
+        });
+    };
+
+    // Append two sequences
+    buildSequence(track);
+    buildSequence(track);
+
+    // After images load, compute duration based on total width for steady speed
+    const computeDuration = () => {
+        const halfWidth = Array.from(track.children)
+            .slice(0, track.children.length / 2)
+            .reduce((w, el) => w + el.getBoundingClientRect().width, 0);
+        // Speed: 100px/sec baseline; duration = distance/speed; ensure min duration
+        const speedPxPerSec = 100; 
+        const durationSec = Math.max(30, halfWidth / speedPxPerSec);
+        track.style.setProperty('--hero-strip-duration', durationSec + 's');
+    };
+
+    // Recompute on load/resize
+    const imgs = track.querySelectorAll('img');
+    let pending = imgs.length;
+    imgs.forEach(img => {
+        if (img.complete) {
+            pending -= 1;
+        } else {
+            img.addEventListener('load', () => {
+                pending -= 1;
+                if (pending === 0) computeDuration();
+            });
+            img.addEventListener('error', () => {
+                pending -= 1;
+                if (pending === 0) computeDuration();
+            });
+        }
+    });
+    if (pending === 0) computeDuration();
+    window.addEventListener('resize', () => {
+        // Recompute after resize for responsiveness
+        computeDuration();
+    });
+}
 // Activities Content Loading Functions for Welcome Page
 function loadActivitiesContent() {
     const activitiesData = JSON.parse(localStorage.getItem('esiActivities') || '{}');
