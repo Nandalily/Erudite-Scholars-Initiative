@@ -16,6 +16,27 @@ body {
     min-height: 100vh;
 }
 
+/* Fluid, scalable media */
+img, picture, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Responsive iframes (wrap in .embed to constrain ratio) */
+.embed {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 default */
+}
+.embed > iframe, .embed > video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 /* Enhanced Scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
@@ -127,6 +148,30 @@ body {
     }
 }
 
+/* Tablet tweaks (768px–1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+}
+
+/* Desktop tweaks (>=1024px) */
+@media (min-width: 1024px) {
+    .container {
+        padding: 0 2rem;
+    }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
 /* Mobile-first responsive adjustments */
 @media (max-width: 767px) {
     /* Mobile navigation - show hamburger, hide horizontal menu */
@@ -175,7 +220,7 @@ body {
     }
     
     .nav-menu {
-        gap: 1.5rem;
+        gap: 2.5rem;
     }
 }
 
@@ -642,9 +687,10 @@ h4 {
 @media (min-width: 768px) {
     .quick-links-grid {
         flex-direction: row;
-    flex-wrap: wrap;
+        flex-wrap: wrap;
         gap: 1.5rem;
-        max-width: 900px;
+        max-width: 1100px;
+        align-items: stretch;
     }
 }
 
@@ -652,7 +698,8 @@ h4 {
     .quick-links-grid {
         flex-wrap: nowrap;
         gap: 2rem;
-        max-width: 1000px;
+        max-width: 1300px;
+        align-items: stretch;
     }
 }
 
@@ -667,7 +714,10 @@ h4 {
     overflow: hidden;
     border: 1px solid #e9ecef;
     width: 100%;
-    max-width: 400px;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    min-height: 340px;
 }
 
 /* Responsive card adjustments */
@@ -738,6 +788,7 @@ h4 {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    margin-top: auto; /* push to bottom to equalize heights */
 }
 
 .category-link:hover {
@@ -784,7 +835,7 @@ input:focus, textarea:focus, select:focus {
     z-index: 1000;
     backdrop-filter: blur(10px);
     background: rgba(30, 60, 114, 0.95);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
     transition: all 0.3s ease;
 }
 
@@ -800,6 +851,21 @@ input:focus, textarea:focus, select:focus {
 }
 
 .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: -1.25rem;
+    padding-left: 1.25rem;
+}
+
+.logo-image {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.logo-text {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -915,7 +981,7 @@ input:focus, textarea:focus, select:focus {
     height: 3px;
     background: white;
     transition: all 0.3s ease;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
 .hamburger.active .bar:nth-child(1) {
@@ -974,6 +1040,16 @@ input:focus, textarea:focus, select:focus {
     justify-content: center;
     position: relative;
     overflow: hidden;
+}
+
+/* Subtle watermark image in blue background */
+.hero-watermark {
+    position: absolute;
+    inset: 0;
+    /* background: url('images/ttt.jpeg') center/contain no-repeat; */
+    opacity: 0.08;
+    z-index: 1; /* same layer as ::before/::after decorative, below content */
+    pointer-events: none;
 }
 
 /* Centered horizontal image strip behind content */
@@ -1090,10 +1166,37 @@ input:focus, textarea:focus, select:focus {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: #ffffff;
     border-radius: 20px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     z-index: -1; /* behind content but above the moving strip */
+}
+
+/* Switch hero content typography to blue on white card */
+.hero-content {
+    color: #1e3c72;
+}
+
+.hero-content h1 {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: #1e3c72 !important;
+    background-clip: initial !important;
+    color: #1e3c72 !important;
+    text-shadow: none !important;
+}
+
+.hero-content h2 {
+    color: #1e3c72;
+    text-shadow: none;
+}
+
+.hero-content .hero-detail,
+.hero-content .hero-detail i,
+.hero-content .hero-detail span,
+.hero-content .countdown-item span,
+.hero-content .countdown-item label {
+    color: #1e3c72;
 }
 
 /* Enhanced Hero Badge */
@@ -2368,6 +2471,8 @@ input:focus, textarea:focus, select:focus {
     color: white;
     padding: 3rem 0 1rem;
     margin-top: 4rem;
+    width: 100%;
+    max-width: none;
 }
 
 .footer::before {
@@ -2385,6 +2490,10 @@ input:focus, textarea:focus, select:focus {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     margin-bottom: 2rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1.25rem;
 }
 
 .footer-section h3,
@@ -2462,6 +2571,11 @@ input:focus, textarea:focus, select:focus {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 1.5rem;
     text-align: center;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
 }
 
 .footer-bottom p {
@@ -2480,6 +2594,12 @@ input:focus, textarea:focus, select:focus {
         grid-template-columns: 1fr;
         gap: 1.5rem;
         text-align: center;
+        padding: 0 1rem;
+    }
+    
+    .footer-bottom {
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
     
     .footer-section .social-icons {
@@ -5714,7 +5834,7 @@ input:focus, textarea:focus, select:focus {
 .timeline-item {
     position: relative;
     margin-bottom: 1.5rem;
-    width: 45%;
+    width: 60%;
 }
 
 .timeline-item:nth-child(odd) {
@@ -5723,7 +5843,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .timeline-item:nth-child(even) {
-    left: 55%;
+    left: 40%;
     text-align: left;
 }
 
@@ -5768,6 +5888,45 @@ input:focus, textarea:focus, select:focus {
     font-size: 0.9rem;
     display: inline-block;
     margin-bottom: 0.6rem;
+}
+
+/* Year styling for timeline items */
+.timeline-item .year {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    text-align: center;
+    min-width: 80px;
+}
+
+/* Achievement content styling */
+.timeline-item .achievement {
+    text-align: center;
+    padding: 1.5rem 2rem;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.timeline-item .achievement h3 {
+    color: #1e3c72;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.timeline-item .achievement p {
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+    text-align: center;
 }
 
 .timeline-title {
@@ -6962,6 +7121,15 @@ input:focus, textarea:focus, select:focus {
         min-height: 55px;
     }
     
+    .nav-logo {
+        margin-left: -1rem;
+        padding-left: 1rem;
+    }
+    
+    .logo-image {
+        height: 35px;
+    }
+    
     .nav-logo h2 {
         font-size: 1.5rem;
     }
@@ -7129,6 +7297,11 @@ input:focus, textarea:focus, select:focus {
         padding: 0 2rem;
     }
     
+    .nav-logo {
+        margin-left: -2rem;
+        padding-left: 2rem;
+    }
+    
     .nav-menu {
         gap: 1.5rem;
     }
@@ -7214,6 +7387,11 @@ input:focus, textarea:focus, select:focus {
         padding: 0 2.5rem;
     }
     
+    .nav-logo {
+        margin-left: -2.5rem;
+        padding-left: 2.5rem;
+    }
+    
     .nav-menu {
         gap: 2rem;
     }
@@ -7277,6 +7455,15 @@ input:focus, textarea:focus, select:focus {
         padding: 0 3rem;
     }
     
+    .nav-logo {
+        margin-left: -3rem;
+        padding-left: 3rem;
+    }
+    
+    .logo-image {
+        height: 50px;
+    }
+    
     .hero {
         padding: 6rem 0 5rem;
         min-height: 95vh;
@@ -7318,6 +7505,15 @@ input:focus, textarea:focus, select:focus {
         padding: 0 4rem;
     }
     
+    .nav-logo {
+        margin-left: -4rem;
+        padding-left: 4rem;
+    }
+    
+    .logo-image {
+        height: 55px;
+    }
+    
     .hero {
         padding: 8rem 0 6rem;
         min-height: 100vh;
@@ -7354,6 +7550,32 @@ input:focus, textarea:focus, select:focus {
     .footer-content {
         grid-template-columns: repeat(4, 1fr);
         gap: 3rem;
+    }
+}
+
+/* Match footer content width/padding to header across breakpoints */
+@media (min-width: 1024px) and (max-width: 1199px) {
+    .footer-content,
+    .footer-bottom {
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .footer-content,
+    .footer-bottom {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+}
+
+@media (min-width: 1400px) {
+    .footer-content,
+    .footer-bottom {
+        max-width: 1400px;
+        padding-left: 4rem;
+        padding-right: 4rem;
     }
 }
 

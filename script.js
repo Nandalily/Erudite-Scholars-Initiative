@@ -1380,10 +1380,11 @@ function initHeroStripCarousel() {
         const halfWidth = Array.from(track.children)
             .slice(0, track.children.length / 2)
             .reduce((w, el) => w + el.getBoundingClientRect().width, 0);
-        // Speed: 100px/sec baseline; duration = distance/speed; ensure min duration
-        const speedPxPerSec = 100; 
-        const durationSec = Math.max(30, halfWidth / speedPxPerSec);
+        // Speed: 400px/sec baseline; duration = distance/speed; ensure min duration
+        const speedPxPerSec = 400; 
+        const durationSec = Math.max(10, halfWidth / speedPxPerSec);
         track.style.setProperty('--hero-strip-duration', durationSec + 's');
+        console.log('Hero strip duration set to:', durationSec + 's', 'Speed:', speedPxPerSec + 'px/s');
     };
 
     // Recompute on load/resize
