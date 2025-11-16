@@ -1152,7 +1152,7 @@ input:focus, textarea:focus, select:focus {
 .hero-content {
     width: 100%;
     max-width: 1200px;
-    margin: clamp(3rem, 8vw, 6rem) auto 0;
+    margin: clamp(2rem, 5vw, 3.5rem) auto 0;
     padding: clamp(0.75rem, 1.5vw, 1rem) clamp(2rem, 4vw, 3rem);
     position: relative;
     z-index: 2;
