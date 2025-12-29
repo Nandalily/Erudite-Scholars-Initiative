@@ -8,6 +8,14 @@ class AdminDashboard {
         this.filteredMessages = [];
         this.currentUser = null;
         this.sessionTimeoutId = null;
+        this.lastRegistrationCount = 0;
+        this.lastMessageCount = 0;
+        
+        // Initialize gallery data storage
+        this.currentGalleryPhotosData = [];
+        this.currentGalleryThumbnailData = null;
+        this.currentGalleryPressImageData = null;
+        this.currentGalleryVideoData = null;
         
         this.init();
     }
@@ -122,10 +130,12 @@ class AdminDashboard {
             compFileInput.addEventListener('change', (e) => this.handleFileUpload(e));
         }
 
-        // Gallery management event listeners
-        const addPhotoForm = document.getElementById('addPhotoForm');
-        if (addPhotoForm) {
-            addPhotoForm.addEventListener('submit', (e) => this.handleAddPhoto(e));
+        // Gallery management event listeners will be attached via attachGalleryFormListeners
+        // This ensures they're attached even when tabs are switched
+        
+        const videoFileInput = document.getElementById('videoFile');
+        if (videoFileInput) {
+            videoFileInput.addEventListener('change', (e) => this.handleGalleryVideoUpload(e));
         }
 
         const addVideoForm = document.getElementById('addVideoForm');
@@ -157,13 +167,203 @@ class AdminDashboard {
         // Gallery tab functionality
         const galleryTabBtns = document.querySelectorAll('.gallery-tab-btn');
         galleryTabBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => this.switchGalleryTab(e));
+            btn.addEventListener('click', (e) => {
+                this.switchGalleryTab(e);
+                // Re-attach form listeners when switching tabs (in case they weren't attached initially)
+                setTimeout(() => this.attachGalleryFormListeners(), 100);
+            });
         });
+        
+        // Attach gallery form listeners
+        this.attachGalleryFormListeners();
 
         // Handle page unload to clean up timeouts
         window.addEventListener('beforeunload', () => {
             if (this.sessionTimeoutId) {
                 clearTimeout(this.sessionTimeoutId);
+            }
+        });
+        
+        // Reload registrations when navigating to registrations section
+        window.addEventListener('hashchange', () => {
+            if (window.location.hash === '#registrations') {
+                console.log('Navigated to registrations section, reloading...');
+                setTimeout(() => {
+                    this.loadRegistrations();
+                    this.updateDashboardStats();
+                }, 100);
+            }
+            if (window.location.hash === '#messages') {
+                console.log('Navigated to messages section, reloading...');
+                setTimeout(() => {
+                    this.loadMessages();
+                    this.updateDashboardStats();
+                }, 100);
+            }
+        });
+        
+        // Also check on initial load if we're on registrations or messages section
+        if (window.location.hash === '#registrations') {
+            setTimeout(() => {
+                this.loadRegistrations();
+                this.updateDashboardStats();
+            }, 300);
+        }
+        if (window.location.hash === '#messages') {
+            setTimeout(() => {
+                this.loadMessages();
+                this.updateDashboardStats();
+            }, 300);
+        }
+        
+        // Also reload when clicking on registrations nav link (in case hash doesn't change)
+        const registrationsNavLink = document.querySelector('a[href="#registrations"]');
+        if (registrationsNavLink) {
+            registrationsNavLink.addEventListener('click', () => {
+                setTimeout(() => {
+                    console.log('Registrations nav link clicked, reloading...');
+                    this.loadRegistrations();
+                    this.updateDashboardStats();
+                }, 200);
+            });
+        }
+        
+        // Also reload when clicking on messages nav link (in case hash doesn't change)
+        const messagesNavLink = document.querySelector('a[href="#messages"]');
+        if (messagesNavLink) {
+            messagesNavLink.addEventListener('click', () => {
+                setTimeout(() => {
+                    console.log('Messages nav link clicked, reloading...');
+                    this.loadMessages();
+                    this.updateDashboardStats();
+                }, 200);
+            });
+        }
+        
+        // Listen for localStorage changes (e.g., new registrations from welcome page)
+        // Note: storage event only fires for changes from OTHER tabs/windows
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'esiRegistrations') {
+                const newCount = JSON.parse(e.newValue || '[]').length;
+                console.log('Detected new registration in localStorage (storage event), refreshing...', {
+                    newCount: newCount,
+                    oldCount: this.lastRegistrationCount
+                });
+                this.lastRegistrationCount = newCount;
+                this.loadRegistrations();
+                this.updateDashboardStats();
+            }
+            if (e.key === 'esiContactMessages') {
+                const newCount = JSON.parse(e.newValue || '[]').length;
+                console.log('Detected new message in localStorage (storage event), refreshing...', {
+                    newCount: newCount,
+                    oldCount: this.lastMessageCount
+                });
+                this.lastMessageCount = newCount;
+                this.loadMessages();
+                this.updateDashboardStats();
+            }
+        });
+        
+        // Also listen for focus events to refresh when admin dashboard regains focus
+        window.addEventListener('focus', () => {
+            // Refresh registrations when window regains focus
+            const currentRegistrations = JSON.parse(localStorage.getItem('esiRegistrations') || '[]');
+            if (currentRegistrations.length !== this.lastRegistrationCount) {
+                console.log('Registration count changed (focus event), refreshing...', {
+                    current: currentRegistrations.length,
+                    last: this.lastRegistrationCount
+                });
+                this.lastRegistrationCount = currentRegistrations.length;
+                this.loadRegistrations();
+                this.updateDashboardStats();
+            }
+            
+            // Refresh messages when window regains focus
+            const currentMessages = JSON.parse(localStorage.getItem('esiContactMessages') || '[]');
+            if (currentMessages.length !== this.lastMessageCount) {
+                console.log('Message count changed (focus event), refreshing...', {
+                    current: currentMessages.length,
+                    last: this.lastMessageCount
+                });
+                this.lastMessageCount = currentMessages.length;
+                this.loadMessages();
+                this.updateDashboardStats();
+            }
+        });
+        
+        // Use Intersection Observer to reload registrations when section becomes visible
+        const registrationsSection = document.getElementById('registrations');
+        if (registrationsSection && 'IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        console.log('Registrations section became visible, checking for updates...');
+                        const currentRegistrations = JSON.parse(localStorage.getItem('esiRegistrations') || '[]');
+                        if (currentRegistrations.length !== this.lastRegistrationCount) {
+                            console.log('Registration count changed (visibility), refreshing...', {
+                                current: currentRegistrations.length,
+                                last: this.lastRegistrationCount
+                            });
+                            this.lastRegistrationCount = currentRegistrations.length;
+                            this.loadRegistrations();
+                            this.updateDashboardStats();
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            observer.observe(registrationsSection);
+        }
+        
+        // Use Intersection Observer to reload messages when section becomes visible
+        const messagesSection = document.getElementById('messages');
+        if (messagesSection && 'IntersectionObserver' in window) {
+            const messagesObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        console.log('Messages section became visible, checking for updates...');
+                        const currentMessages = JSON.parse(localStorage.getItem('esiContactMessages') || '[]');
+                        if (currentMessages.length !== this.lastMessageCount) {
+                            console.log('Message count changed (visibility), refreshing...', {
+                                current: currentMessages.length,
+                                last: this.lastMessageCount
+                            });
+                            this.lastMessageCount = currentMessages.length;
+                            this.loadMessages();
+                            this.updateDashboardStats();
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            messagesObserver.observe(messagesSection);
+        }
+        
+        // Also reload when page becomes visible (handles tab switching)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                const currentRegistrations = JSON.parse(localStorage.getItem('esiRegistrations') || '[]');
+                if (currentRegistrations.length !== this.lastRegistrationCount) {
+                    console.log('Page visible and registration count changed, refreshing...', {
+                        current: currentRegistrations.length,
+                        last: this.lastRegistrationCount
+                    });
+                    this.lastRegistrationCount = currentRegistrations.length;
+                    this.loadRegistrations();
+                    this.updateDashboardStats();
+                }
+                
+                const currentMessages = JSON.parse(localStorage.getItem('esiContactMessages') || '[]');
+                if (currentMessages.length !== this.lastMessageCount) {
+                    console.log('Page visible and message count changed, refreshing...', {
+                        current: currentMessages.length,
+                        last: this.lastMessageCount
+                    });
+                    this.lastMessageCount = currentMessages.length;
+                    this.loadMessages();
+                    this.updateDashboardStats();
+                }
             }
         });
 
@@ -269,13 +469,19 @@ class AdminDashboard {
 
     loadRegistrations() {
         const registrations = JSON.parse(localStorage.getItem('esiRegistrations') || '[]');
+        console.log('Loading registrations:', registrations.length, 'found');
+        
+        // Update last known count
+        this.lastRegistrationCount = registrations.length;
+        
         this.filteredRegistrations = registrations.map((reg, index) => ({
             ...reg,
             id: index + 1,
             status: reg.status || 'pending',
-            registrationDate: reg.registrationDate ? new Date(reg.registrationDate).toLocaleDateString() : 'N/A'
+            registrationDate: reg.registrationDate ? new Date(reg.registrationDate).toLocaleDateString() : (reg.timestamp ? new Date(reg.timestamp).toLocaleDateString() : 'N/A')
         }));
         
+        console.log('Filtered registrations:', this.filteredRegistrations.length);
         this.displayRegistrations();
         this.populateSchoolFilter();
     }
@@ -286,30 +492,47 @@ class AdminDashboard {
         const pageRegistrations = this.filteredRegistrations.slice(startIndex, endIndex);
         
         const tbody = document.getElementById('registrationsTableBody');
-        if (!tbody) return;
+        if (!tbody) {
+            console.warn('registrationsTableBody not found, retrying in 100ms...');
+            // Retry if element doesn't exist yet (DOM might not be ready)
+            setTimeout(() => this.displayRegistrations(), 100);
+            return;
+        }
         
-        tbody.innerHTML = pageRegistrations.map(reg => `
-            <tr>
-                <td>${reg.id}</td>
-                <td>${reg.participantName}</td>
-                <td>${reg.schoolName}</td>
-                <td>${this.formatCategory(reg.competitionCategory)}</td>
-                <td>${reg.email}</td>
-                <td><span class="status-badge status-${reg.status}">${reg.status}</span></td>
-                <td>${reg.registrationDate}</td>
-                <td>
-                    <button class="btn-small btn-primary" onclick="adminDashboard.viewRegistration(${reg.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn-small btn-success" onclick="adminDashboard.approveRegistration(${reg.id})">
-                        <i class="fas fa-check"></i>
-                    </button>
-                    <button class="btn-small btn-danger" onclick="adminDashboard.rejectRegistration(${reg.id})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        if (pageRegistrations.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 2rem; color: #666;">
+                        <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 1rem; display: block; opacity: 0.5;"></i>
+                        <p>No registrations found.</p>
+                        ${this.filteredRegistrations.length === 0 ? '<small>Registrations will appear here once students submit their forms.</small>' : '<small>Try adjusting your filters.</small>'}
+                    </td>
+                </tr>
+            `;
+        } else {
+            tbody.innerHTML = pageRegistrations.map(reg => `
+                <tr>
+                    <td>${reg.id}</td>
+                    <td>${reg.participantName || 'N/A'}</td>
+                    <td>${reg.schoolName || 'N/A'}</td>
+                    <td>${this.formatCategory(reg.competitionCategory || '')}</td>
+                    <td>${reg.email || 'N/A'}</td>
+                    <td><span class="status-badge status-${reg.status}">${reg.status}</span></td>
+                    <td>${reg.registrationDate}</td>
+                    <td>
+                        <button class="btn-small btn-primary" onclick="adminDashboard.viewRegistration(${reg.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-small btn-success" onclick="adminDashboard.approveRegistration(${reg.id})">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn-small btn-danger" onclick="adminDashboard.rejectRegistration(${reg.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
         
         this.updatePagination();
     }
@@ -403,6 +626,11 @@ class AdminDashboard {
 
     loadMessages() {
         const messages = JSON.parse(localStorage.getItem('esiContactMessages') || '[]');
+        console.log('Loading messages:', messages.length, 'found');
+        
+        // Update last known count
+        this.lastMessageCount = messages.length;
+        
         this.filteredMessages = messages.map((msg, index) => ({
             ...msg,
             id: index + 1,
@@ -411,42 +639,58 @@ class AdminDashboard {
             date: msg.timestamp ? new Date(msg.timestamp).toLocaleDateString() : 'N/A'
         }));
         
+        console.log('Filtered messages:', this.filteredMessages.length);
         this.displayMessages();
     }
 
     displayMessages() {
         const messagesList = document.getElementById('messagesList');
-        if (!messagesList) return;
+        if (!messagesList) {
+            console.warn('messagesList not found, retrying in 100ms...');
+            // Retry if element doesn't exist yet (DOM might not be ready)
+            setTimeout(() => this.displayMessages(), 100);
+            return;
+        }
         
-        messagesList.innerHTML = this.filteredMessages.map(msg => `
-            <div class="message-item ${msg.read ? 'read' : 'unread'} ${msg.replied ? 'replied' : ''}">
-                <div class="message-header">
-                    <h4>${msg.subject}</h4>
-                    <div class="message-meta">
-                        <span class="sender">${msg.name}</span>
-                        <span class="email">${msg.email}</span>
-                        <span class="date">${msg.date}</span>
-                        <span class="status-badge status-${msg.read ? 'read' : 'unread'}">
-                            ${msg.read ? 'Read' : 'Unread'}
-                        </span>
+        if (this.filteredMessages.length === 0) {
+            messagesList.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #666;">
+                    <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.5;"></i>
+                    <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">No messages found.</p>
+                    <small>Messages will appear here once visitors submit contact forms.</small>
+                </div>
+            `;
+        } else {
+            messagesList.innerHTML = this.filteredMessages.map(msg => `
+                <div class="message-item ${msg.read ? 'read' : 'unread'} ${msg.replied ? 'replied' : ''}">
+                    <div class="message-header">
+                        <h4>${msg.subject || 'No Subject'}</h4>
+                        <div class="message-meta">
+                            <span class="sender">${msg.name || 'N/A'}</span>
+                            <span class="email">${msg.email || 'N/A'}</span>
+                            <span class="date">${msg.date}</span>
+                            <span class="status-badge status-${msg.read ? 'read' : 'unread'}">
+                                ${msg.read ? 'Read' : 'Unread'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="message-content">
+                        <p>${(msg.message || '').substring(0, 150)}${(msg.message || '').length > 150 ? '...' : ''}</p>
+                    </div>
+                    <div class="message-actions">
+                        <button class="btn-small btn-primary" onclick="adminDashboard.viewMessage(${msg.id})">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="btn-small btn-success" onclick="adminDashboard.replyToMessage(${msg.id})">
+                            <i class="fas fa-reply"></i> Reply
+                        </button>
+                        <button class="btn-small btn-danger" onclick="adminDashboard.deleteMessage(${msg.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </div>
                 </div>
-                <div class="message-content">
-                    <p>${msg.message.substring(0, 150)}${msg.message.length > 150 ? '...' : ''}</p>
-                </div>
-                <div class="message-actions">
-                    <button class="btn-small btn-primary" onclick="adminDashboard.viewMessage(${msg.id})">
-                        <i class="fas fa-eye"></i> View
-                    </button>
-                    <button class="btn-small btn-success" onclick="adminDashboard.replyToMessage(${msg.id})">
-                        <i class="fas fa-reply"></i> Reply
-                    </button>
-                    <button class="btn-small btn-danger" onclick="adminDashboard.deleteMessage(${msg.id})">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </div>
-            </div>
-        `).join('');
+            `).join('');
+        }
     }
 
     filterMessages() {
@@ -689,31 +933,155 @@ class AdminDashboard {
     // Gallery Management Methods
     handleAddPhoto(e) {
         e.preventDefault();
+        e.stopPropagation();
         
-        const formData = new FormData(e.target);
-        const photoData = {
-            id: Date.now().toString(),
-            title: formData.get('title'),
-            category: formData.get('category'),
-            description: formData.get('description'),
-            image: this.currentGalleryImageData || null,
-            createdAt: new Date().toISOString()
-        };
+        console.log('handleAddPhoto called');
+        console.log('Event target:', e.target);
+        console.log('currentGalleryPhotosData:', this.currentGalleryPhotosData);
         
-        if (!photoData.image) {
-            this.showNotification('Please select a photo to upload', 'error');
+        const form = e.target;
+        if (!form || form.tagName !== 'FORM') {
+            console.error('Invalid form element');
+            this.showNotification('Form submission error. Please try again.', 'error');
             return;
         }
         
-        const photos = JSON.parse(localStorage.getItem('esiGalleryPhotos') || '[]');
-        photos.push(photoData);
-        localStorage.setItem('esiGalleryPhotos', JSON.stringify(photos));
+        const formData = new FormData(form);
+        const photosToSave = this.currentGalleryPhotosData || [];
+        const baseTitle = formData.get('title') || 'Untitled Photo';
+        const category = formData.get('category');
+        const description = formData.get('description');
         
-        this.loadGalleryPhotos();
-        e.target.reset();
-        this.clearGalleryPreviews();
+        console.log('Form data:', {
+            title: baseTitle,
+            category: category,
+            description: description,
+            photosCount: photosToSave.length
+        });
         
-        this.showNotification('Photo added successfully!', 'success');
+        if (!photosToSave || photosToSave.length === 0) {
+            console.warn('No photos selected');
+            this.showNotification('Please select up to 4 photos to upload', 'error');
+            // Focus on the file input to help user
+            const photoInput = document.getElementById('photoImage');
+            if (photoInput) {
+                photoInput.focus();
+                photoInput.click();
+            }
+            return;
+        }
+        
+        console.log(`Saving ${photosToSave.length} photo(s)`);
+        
+        try {
+            const timestamp = Date.now();
+            const photos = JSON.parse(localStorage.getItem('esiGalleryPhotos') || '[]');
+            
+            let savedCount = 0;
+            photosToSave.forEach((photoImage, index) => {
+                if (!photoImage || !photoImage.data) {
+                    console.error(`Photo ${index} is invalid:`, photoImage);
+                    return;
+                }
+                
+                // Validate image data
+                if (typeof photoImage.data !== 'string' || !photoImage.data.startsWith('data:')) {
+                    console.error(`Photo ${index} has invalid data format`);
+                    return;
+                }
+                
+                // Check individual photo data size
+                const photoDataSize = new Blob([photoImage.data]).size;
+                if (photoDataSize > 10 * 1024 * 1024) { // 10MB per photo
+                    console.warn(`Photo ${index} is very large: ${(photoDataSize / (1024 * 1024)).toFixed(2)}MB`);
+                }
+                
+                try {
+                    photos.push({
+                        id: `${timestamp}-${index}`,
+                        title: photosToSave.length > 1 ? `${baseTitle} (${index + 1})` : baseTitle,
+                        category,
+                        description,
+                        image: {
+                            name: photoImage.name || `photo-${index}.jpg`,
+                            type: photoImage.type || 'image/jpeg',
+                            size: photoImage.size || 0,
+                            data: photoImage.data
+                        },
+                        createdAt: new Date().toISOString()
+                    });
+                    savedCount++;
+                } catch (pushError) {
+                    console.error(`Error adding photo ${index} to array:`, pushError);
+                }
+            });
+            
+            if (savedCount === 0) {
+                this.showNotification('No valid photos to save', 'error');
+                return;
+            }
+            
+            // Check data size before saving
+            const photosJson = JSON.stringify(photos);
+            const dataSize = new Blob([photosJson]).size;
+            const dataSizeMB = (dataSize / (1024 * 1024)).toFixed(2);
+            console.log(`Photo data size: ${dataSizeMB} MB`);
+            
+            if (dataSize > 5 * 1024 * 1024) { // Warn if over 5MB
+                console.warn('Large data size detected, may cause storage issues');
+            }
+            
+            // Try to save to localStorage with better error handling
+            try {
+                localStorage.setItem('esiGalleryPhotos', photosJson);
+                console.log(`Saved ${photos.length} total photos to localStorage`);
+            } catch (storageError) {
+                console.error('localStorage.setItem failed:', storageError);
+                if (storageError.name === 'QuotaExceededError' || storageError.code === 22) {
+                    throw new Error('Storage quota exceeded. Please delete some old photos or use smaller images.');
+                }
+                throw storageError;
+            }
+            
+            // Verify the data was saved correctly
+            const verifyPhotos = JSON.parse(localStorage.getItem('esiGalleryPhotos') || '[]');
+            console.log('Verification - Photos in localStorage:', verifyPhotos.length);
+            if (verifyPhotos.length > 0) {
+                console.log('Sample photo structure:', {
+                    id: verifyPhotos[verifyPhotos.length - 1].id,
+                    title: verifyPhotos[verifyPhotos.length - 1].title,
+                    hasImage: !!verifyPhotos[verifyPhotos.length - 1].image,
+                    hasImageData: !!(verifyPhotos[verifyPhotos.length - 1].image && verifyPhotos[verifyPhotos.length - 1].image.data)
+                });
+            }
+            
+            this.loadGalleryPhotos();
+            form.reset();
+            this.clearGalleryPreviews();
+            
+            // Refresh welcome page gallery with a slight delay to ensure localStorage is updated
+            setTimeout(() => {
+                this.refreshWelcomePageGallery();
+            }, 100);
+            
+            this.showNotification(`Successfully added ${savedCount} photo(s)! The gallery will update automatically.`, 'success');
+        } catch (error) {
+            console.error('Error saving photos:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
+            
+            // Check if it's a quota exceeded error
+            if (error.name === 'QuotaExceededError' || error.message.includes('quota') || error.message.includes('storage')) {
+                this.showNotification('Storage limit exceeded. Please reduce the number or size of photos. Each photo should be under 5MB.', 'error');
+            } else {
+                // Show more detailed error message
+                const errorMsg = error.message || 'Unknown error occurred';
+                this.showNotification(`Error saving photos: ${errorMsg}. Please try again with smaller images.`, 'error');
+            }
+        }
     }
 
     handleAddVideo(e) {
@@ -742,6 +1110,7 @@ class AdminDashboard {
         this.loadGalleryVideos();
         e.target.reset();
         this.clearGalleryPreviews();
+        this.refreshWelcomePageGallery();
         
         this.showNotification('Video added successfully!', 'success');
     }
@@ -768,13 +1137,72 @@ class AdminDashboard {
         this.loadGalleryPress();
         e.target.reset();
         this.clearGalleryPreviews();
+        this.refreshWelcomePageGallery();
         
         this.showNotification('Press coverage added successfully!', 'success');
     }
 
     handleGalleryImageUpload(e, type) {
-        const file = e.target.files[0];
-        if (!file) return;
+        console.log('handleGalleryImageUpload called with type:', type);
+        const files = Array.from(e.target.files || []);
+        if (!files.length) {
+            console.warn('No files selected');
+            return;
+        }
+        
+        console.log(`Processing ${files.length} file(s) for type: ${type}`);
+        
+        if (type === 'photo') {
+            if (files.length > 4) {
+                this.showNotification('You can upload up to 4 photos at once', 'error');
+                e.target.value = '';
+                return;
+            }
+            
+            const invalidFile = files.find(file => file.size > 5 * 1024 * 1024 || !file.type.startsWith('image/'));
+            if (invalidFile) {
+                this.showNotification('Each photo must be an image under 5MB', 'error');
+                e.target.value = '';
+                return;
+            }
+            
+            const toDataUrl = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    console.log(`Successfully read file: ${file.name}`);
+                    resolve({
+                        name: file.name,
+                        type: file.type,
+                        size: file.size,
+                        data: event.target.result
+                    });
+                };
+                reader.onerror = (error) => {
+                    console.error('FileReader error:', error);
+                    reject(new Error('Failed to read file'));
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            console.log('Starting to process files...');
+            Promise.all(files.map(toDataUrl))
+                .then(images => {
+                    console.log(`Successfully processed ${images.length} image(s)`);
+                    this.currentGalleryPhotosData = images;
+                    console.log('Stored photos data:', this.currentGalleryPhotosData);
+                    this.renderPhotoPreviews(images);
+                    this.showNotification(`${images.length} photo(s) selected. Click "Add Photo" to upload.`, 'success');
+                })
+                .catch((error) => {
+                    console.error('Error processing photos:', error);
+                    this.showNotification('Could not process the selected photos', 'error');
+                    e.target.value = '';
+                });
+            
+            return;
+        }
+        
+        const file = files[0];
 
         // Validate file size based on type
         let maxSize;
@@ -810,16 +1238,6 @@ class AdminDashboard {
         reader.onload = (event) => {
             let previewId, previewImgId;
             switch (type) {
-                case 'photo':
-                    previewId = 'photoPreview';
-                    previewImgId = 'previewPhotoImg';
-                    this.currentGalleryImageData = {
-                        name: file.name,
-                        type: file.type,
-                        size: file.size,
-                        data: event.target.result
-                    };
-                    break;
                 case 'thumbnail':
                     previewId = 'thumbnailPreview';
                     previewImgId = 'previewThumbnailImg';
@@ -852,10 +1270,80 @@ class AdminDashboard {
         };
         reader.readAsDataURL(file);
     }
+    
+    handleGalleryVideoUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const maxSize = 50 * 1024 * 1024; // 50MB
+        if (!file.type.startsWith('video/')) {
+            this.showNotification('Please select a valid video file', 'error');
+            e.target.value = '';
+            return;
+        }
+        
+        if (file.size > maxSize) {
+            this.showNotification('Video must be less than 50MB', 'error');
+            e.target.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            this.currentGalleryVideoData = {
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                data: event.target.result
+            };
+            
+            const videoPreview = document.getElementById('videoPreview');
+            const videoPreviewInfo = document.getElementById('videoPreviewInfo');
+            
+            if (videoPreview && videoPreviewInfo) {
+                const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+                videoPreviewInfo.innerHTML = `<strong>${file.name}</strong> (${sizeMb} MB)`;
+                videoPreview.style.display = 'block';
+            }
+        };
+        
+        reader.readAsDataURL(file);
+    }
+    
+    renderPhotoPreviews(images) {
+        console.log('renderPhotoPreviews called with', images.length, 'images');
+        const photoPreview = document.getElementById('photoPreview');
+        const photoPreviewGrid = document.getElementById('photoPreviewGrid');
+        
+        if (!photoPreview) {
+            console.error('photoPreview element not found');
+            return;
+        }
+        
+        if (!photoPreviewGrid) {
+            console.error('photoPreviewGrid element not found');
+            return;
+        }
+        
+        if (images && images.length > 0) {
+            photoPreviewGrid.innerHTML = images.map((image, index) => `
+                <div class="preview-thumb" style="position: relative; display: inline-block; margin: 0.5rem;">
+                    <img src="${image.data}" alt="${image.name}" style="max-width: 150px; max-height: 150px; border-radius: 8px; object-fit: cover;">
+                    <small style="display: block; margin-top: 0.25rem; font-size: 0.75rem; color: #666;">${image.name}</small>
+                </div>
+            `).join('');
+            
+            photoPreview.style.display = 'block';
+            console.log('Photo preview displayed');
+        } else {
+            console.warn('No images to preview');
+            photoPreview.style.display = 'none';
+        }
+    }
 
     clearGalleryPreviews() {
         // Clear all gallery previews
-        const previews = ['photoPreview', 'thumbnailPreview', 'pressImagePreview'];
+        const previews = ['photoPreview', 'thumbnailPreview', 'pressImagePreview', 'videoPreview'];
         previews.forEach(previewId => {
             const preview = document.getElementById(previewId);
             if (preview) {
@@ -864,16 +1352,28 @@ class AdminDashboard {
         });
         
         // Clear stored data
-        this.currentGalleryImageData = null;
+        this.currentGalleryPhotosData = [];
         this.currentGalleryThumbnailData = null;
         this.currentGalleryPressImageData = null;
+        this.currentGalleryVideoData = null;
         
         // Clear input values
-        const inputs = ['photoImage', 'videoThumbnail', 'pressImage'];
+        const inputs = ['photoImage', 'videoThumbnail', 'pressImage', 'videoFile'];
         inputs.forEach(inputId => {
             const input = document.getElementById(inputId);
             if (input) input.value = '';
         });
+        
+        // Clear dynamic preview contents
+        const photoPreviewGrid = document.getElementById('photoPreviewGrid');
+        if (photoPreviewGrid) {
+            photoPreviewGrid.innerHTML = '';
+        }
+        
+        const videoPreviewInfo = document.getElementById('videoPreviewInfo');
+        if (videoPreviewInfo) {
+            videoPreviewInfo.textContent = '';
+        }
     }
 
     loadGalleryPhotos() {
@@ -988,16 +1488,95 @@ class AdminDashboard {
     }
 
     refreshWelcomePageGallery() {
+        console.log('Refreshing welcome page gallery...');
+        
         // Check if welcome page is open and refresh gallery
         if (window.opener && window.opener.loadGalleryData) {
+            console.log('Calling loadGalleryData on opener window');
             window.opener.loadGalleryData();
         }
         
         // Also try to refresh if using localStorage events
         try {
-            localStorage.setItem('esiGalleryUpdated', Date.now().toString());
+            const timestamp = Date.now().toString();
+            localStorage.setItem('esiGalleryUpdated', timestamp);
+            console.log('Set esiGalleryUpdated timestamp:', timestamp);
+            
+            // Also trigger a storage event manually for same-window scenarios
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'esiGalleryUpdated',
+                newValue: timestamp,
+                oldValue: localStorage.getItem('esiGalleryUpdated'),
+                storageArea: localStorage
+            }));
         } catch (e) {
-            console.log('Could not update localStorage timestamp');
+            console.error('Could not update localStorage timestamp:', e);
+        }
+        
+        // If we're on the same page (admin and main site in same window), reload gallery
+        // This handles the case where admin is opened in the same tab
+        if (typeof loadGalleryData === 'function') {
+            console.log('Calling loadGalleryData on current window');
+            setTimeout(() => {
+                loadGalleryData();
+            }, 100);
+        }
+    }
+
+    attachGalleryFormListeners() {
+        // Photo form - use a wrapper function to ensure 'this' context
+        const addPhotoForm = document.getElementById('addPhotoForm');
+        if (addPhotoForm) {
+            // Remove any existing listeners by cloning (clean slate)
+            if (!addPhotoForm.dataset.listenerAttached) {
+                console.log('Attaching photo form submit listener');
+                const handleSubmit = (e) => {
+                    console.log('Photo form submit event fired');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.handleAddPhoto(e);
+                };
+                
+                addPhotoForm.addEventListener('submit', handleSubmit);
+                addPhotoForm.dataset.listenerAttached = 'true';
+                addPhotoForm.dataset.handler = 'attached';
+                
+                // Also add direct click handler to button as backup
+                const submitBtn = document.getElementById('addPhotoBtn') || addPhotoForm.querySelector('button[type="submit"]');
+                if (submitBtn && !submitBtn.dataset.clickHandlerAttached) {
+                    console.log('Attaching direct button click handler');
+                    submitBtn.addEventListener('click', (e) => {
+                        console.log('Add Photo button clicked directly');
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Manually trigger form submission
+                        if (addPhotoForm.checkValidity()) {
+                            const formEvent = new Event('submit', { bubbles: true, cancelable: true });
+                            addPhotoForm.dispatchEvent(formEvent);
+                        } else {
+                            addPhotoForm.reportValidity();
+                        }
+                    });
+                    submitBtn.dataset.clickHandlerAttached = 'true';
+                }
+            }
+        } else {
+            console.warn('addPhotoForm not found when trying to attach listeners');
+        }
+        
+        // Video form
+        const addVideoForm = document.getElementById('addVideoForm');
+        if (addVideoForm && !addVideoForm.dataset.listenerAttached) {
+            addVideoForm.addEventListener('submit', (e) => this.handleAddVideo(e));
+            addVideoForm.dataset.listenerAttached = 'true';
+        }
+        
+        // Press form
+        const addPressForm = document.getElementById('addPressForm');
+        if (addPressForm && !addPressForm.dataset.listenerAttached) {
+            addPressForm.addEventListener('submit', (e) => this.handleAddPress(e));
+            addPressForm.dataset.listenerAttached = 'true';
         }
     }
 
@@ -1558,8 +2137,18 @@ function removePressImagePreview() {
 // Initialize admin dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Only initialize if we're on the admin page
-    if (window.location.pathname.includes('admin.html')) {
+    if (window.location.pathname.includes('admin.html') || window.location.href.includes('admin.html')) {
+        console.log('Initializing AdminDashboard...');
         window.adminDashboard = new AdminDashboard();
+        
+        // Ensure registrations and messages are loaded after a short delay to ensure DOM is fully ready
+        setTimeout(() => {
+            if (window.adminDashboard) {
+                console.log('Reloading registrations and messages to ensure display...');
+                window.adminDashboard.loadRegistrations();
+                window.adminDashboard.loadMessages();
+            }
+        }, 200);
     }
 });
 
@@ -1825,8 +2414,55 @@ function switchHomeTab(tabName) {
     }
 }
 
+function formatDateForDisplay(dateString) {
+    if (!dateString) return '';
+    
+    const parsedDate = normalizeDateString(dateString);
+    if (!parsedDate) return dateString;
+    
+    return parsedDate.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+function normalizeDateString(dateString) {
+    if (!dateString) return null;
+    
+    let parsedDate = new Date(dateString);
+    if (isNaN(parsedDate.getTime())) {
+        // Try stripping ordinal suffixes like "21st", "22nd", "23rd", "24th"
+        const cleaned = dateString.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
+        parsedDate = new Date(cleaned);
+    }
+    
+    if (isNaN(parsedDate.getTime())) {
+        return null;
+    }
+    
+    return parsedDate;
+}
+
+function sanitizeLegacyDefaultDate(value) {
+    if (!value) return '';
+    const trimmed = value.trim();
+    // Ignore old hard-coded defaults
+    if (/21(st)?\s+September\s+2025/i.test(trimmed)) return '';
+    if (trimmed === '2025-09-21') return '';
+    return trimmed;
+}
+
+function getDefaultEventDate() {
+    const fallbackDate = new Date();
+    fallbackDate.setDate(fallbackDate.getDate() + 30);
+    return fallbackDate.toISOString().split('T')[0];
+}
+
 function loadHomeContent() {
     const homeData = JSON.parse(localStorage.getItem('esiHomeContent') || '{}');
+    homeData.eventDate = sanitizeLegacyDefaultDate(homeData.eventDate);
+    homeData.countdownDate = sanitizeLegacyDefaultDate(homeData.countdownDate);
     
     // Load basic info
     if (homeData.heroBadge) {
@@ -1839,7 +2475,12 @@ function loadHomeContent() {
         document.getElementById('heroSubtitle').value = homeData.heroSubtitle;
     }
     if (homeData.eventDate) {
-        document.getElementById('eventDate').value = homeData.eventDate;
+        const normalized = normalizeDateString(homeData.eventDate);
+        if (normalized) {
+            document.getElementById('eventDate').value = normalized.toISOString().split('T')[0];
+        } else {
+            document.getElementById('eventDate').value = homeData.eventDate;
+        }
     }
     if (homeData.eventVenue) {
         document.getElementById('eventVenue').value = homeData.eventVenue;
@@ -1869,24 +2510,20 @@ function loadHomeContent() {
     if (!homeData.heroSubtitle) {
         document.getElementById('heroSubtitle').value = 'A Gender Equality Debate, Poetry, and Public Speech Competition';
     }
-    if (!homeData.eventDate) {
-        document.getElementById('eventDate').value = '21st September 2025';
-    }
+    
+    const eventDateValue = homeData.eventDate || getDefaultEventDate();
+    document.getElementById('eventDate').value = eventDateValue;
+    
     if (!homeData.eventVenue) {
         document.getElementById('eventVenue').value = 'Mbogo Mixed Secondary School';
     }
     if (!homeData.eventAudience) {
         document.getElementById('eventAudience').value = 'Open to All Schools';
     }
-    if (!homeData.countdownDate) {
-        document.getElementById('countdownDate').value = '2025-09-21';
-    }
-    if (!homeData.countdownTime) {
-        document.getElementById('countdownTime').value = '09:00';
-    }
-    if (!homeData.countdownMessage) {
-        document.getElementById('countdownMessage').value = 'Event Day Has Arrived!';
-    }
+    
+    document.getElementById('countdownDate').value = homeData.countdownDate || eventDateValue;
+    document.getElementById('countdownTime').value = homeData.countdownTime || '00:00';
+    document.getElementById('countdownMessage').value = homeData.countdownMessage || 'Date has arrived!';
     
     // Update preview
     updatePreview();
@@ -1934,7 +2571,9 @@ function updatePreview() {
     document.getElementById('previewBadge').textContent = document.getElementById('heroBadge').value || 'ESI 2025';
     document.getElementById('previewTitle').textContent = document.getElementById('heroTitle').value || 'Equality Beyond Gender Roles';
     document.getElementById('previewSubtitle').textContent = document.getElementById('heroSubtitle').value || 'A Gender Equality Debate, Poetry, and Public Speech Competition';
-    document.getElementById('previewDate').textContent = document.getElementById('eventDate').value || '21st September 2025';
+    
+    const formattedDate = formatDateForDisplay(document.getElementById('eventDate').value);
+    document.getElementById('previewDate').textContent = formattedDate || 'Select event date';
     document.getElementById('previewVenue').textContent = document.getElementById('eventVenue').value || 'Mbogo Mixed Secondary School';
     document.getElementById('previewAudience').textContent = document.getElementById('eventAudience').value || 'Open to All Schools';
     
@@ -1943,41 +2582,63 @@ function updatePreview() {
 }
 
 function updateCountdownPreview() {
-    const countdownDate = document.getElementById('countdownDate').value;
-    const countdownTime = document.getElementById('countdownTime').value;
+    const countdownDate = document.getElementById('countdownDate').value || document.getElementById('eventDate').value;
+    const countdownTime = document.getElementById('countdownTime').value || '00:00';
     
-    if (countdownDate && countdownTime) {
-        const targetDateTime = new Date(`${countdownDate}T${countdownTime}`).getTime();
-        const now = new Date().getTime();
-        const distance = targetDateTime - now;
+    const previewCountdown = document.getElementById('previewCountdownTimer');
+    if (!countdownDate || !previewCountdown) {
+        return;
+    }
+
+    // Ensure preview countdown structure exists even after message render
+    if (!previewCountdown.querySelector('.countdown-item')) {
+        previewCountdown.innerHTML = `
+            <div class="countdown-item">
+                <span id="previewCountdownDays">00</span>
+                <label>Days</label>
+            </div>
+            <div class="countdown-item">
+                <span id="previewCountdownHours">00</span>
+                <label>Hours</label>
+            </div>
+            <div class="countdown-item">
+                <span id="previewCountdownMinutes">00</span>
+                <label>Minutes</label>
+            </div>
+            <div class="countdown-item">
+                <span id="previewCountdownSeconds">00</span>
+                <label>Seconds</label>
+            </div>
+        `;
+    }
+
+    const targetDateTime = new Date(`${countdownDate}T${countdownTime}`).getTime();
+    const now = new Date().getTime();
+    const distance = targetDateTime - now;
+    
+    if (distance > 0) {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
         
-        if (distance > 0) {
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            document.getElementById('previewDays').textContent = days.toString().padStart(2, '0');
-            document.getElementById('previewHours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('previewMinutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('previewSeconds').textContent = seconds.toString().padStart(2, '0');
-            
-            document.getElementById('previewCountdownDays').textContent = days.toString().padStart(2, '0');
-            document.getElementById('previewCountdownHours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('previewCountdownMinutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('previewCountdownSeconds').textContent = seconds.toString().padStart(2, '0');
-        } else {
-            const message = document.getElementById('countdownMessage').value || 'Event Day Has Arrived!';
-            document.getElementById('previewDays').textContent = '00';
-            document.getElementById('previewHours').textContent = '00';
-            document.getElementById('previewMinutes').textContent = '00';
-            document.getElementById('previewSeconds').textContent = '00';
-            
-            document.getElementById('previewCountdownDays').textContent = '00';
-            document.getElementById('previewCountdownHours').textContent = '00';
-            document.getElementById('previewCountdownMinutes').textContent = '00';
-            document.getElementById('previewCountdownSeconds').textContent = '00';
-        }
+        document.getElementById('previewDays').textContent = days.toString().padStart(2, '0');
+        document.getElementById('previewHours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('previewMinutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('previewSeconds').textContent = seconds.toString().padStart(2, '0');
+        
+        document.getElementById('previewCountdownDays').textContent = days.toString().padStart(2, '0');
+        document.getElementById('previewCountdownHours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('previewCountdownMinutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('previewCountdownSeconds').textContent = seconds.toString().padStart(2, '0');
+    } else {
+        const message = document.getElementById('countdownMessage').value || 'Date has arrived!';
+        previewCountdown.innerHTML = `<div class="event-passed">${message}</div>`;
+        
+        document.getElementById('previewDays').textContent = '00';
+        document.getElementById('previewHours').textContent = '00';
+        document.getElementById('previewMinutes').textContent = '00';
+        document.getElementById('previewSeconds').textContent = '00';
     }
 }
 

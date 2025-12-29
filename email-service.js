@@ -5,7 +5,7 @@
 class EmailService {
     constructor() {
         this.adminEmail = 'nankundlilian5@gmail.com';
-        this.companyName = 'MARTIN';
+        this.companyName = 'ESI';
         this.baseUrl = window.location.origin;
     }
 

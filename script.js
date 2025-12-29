@@ -47,59 +47,6 @@ if (hamburger && navMenu) {
     });
 }
 
-// Enhanced Countdown Timer with animations
-function updateCountdown() {
-    const eventDate = new Date('September 21, 2025 09:00:00').getTime();
-    const now = new Date().getTime();
-    const distance = eventDate - now;
-
-    if (distance > 0) {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        const daysElement = document.getElementById('days');
-        const hoursElement = document.getElementById('hours');
-        const minutesElement = document.getElementById('minutes');
-        const secondsElement = document.getElementById('seconds');
-
-        // Add pulse animation when values change
-        if (daysElement && daysElement.textContent !== days.toString()) {
-            daysElement.style.animation = 'countdownPulse 0.5s ease-out';
-            setTimeout(() => daysElement.style.animation = '', 500);
-        }
-        if (hoursElement && hoursElement.textContent !== hours.toString()) {
-            hoursElement.style.animation = 'countdownPulse 0.5s ease-out';
-            setTimeout(() => hoursElement.style.animation = '', 500);
-        }
-        if (minutesElement && minutesElement.textContent !== minutes.toString()) {
-            minutesElement.style.animation = 'countdownPulse 0.5s ease-out';
-            setTimeout(() => minutesElement.style.animation = '', 500);
-        }
-        if (secondsElement && secondsElement.textContent !== seconds.toString()) {
-            secondsElement.style.animation = 'countdownPulse 0.5s ease-out';
-            setTimeout(() => secondsElement.style.animation = '', 500);
-        }
-
-        if (daysElement) daysElement.textContent = days.toString().padStart(2, '0');
-        if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
-        if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
-        if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
-    } else {
-        // Event has passed
-        const countdownTimer = document.getElementById('countdownTimer');
-        if (countdownTimer) {
-            countdownTimer.innerHTML = '<div class="event-passed">Event Day Has Arrived!</div>';
-            countdownTimer.style.animation = 'eventPassed 1s ease-out';
-        }
-    }
-}
-
-// Update countdown every second
-setInterval(updateCountdown, 1000);
-updateCountdown(); // Initial call
-
 // Mobile-first responsive utilities
 function initResponsiveFeatures() {
     // Add touch-friendly hover effects for mobile
@@ -261,6 +208,20 @@ function initSmoothScrolling() {
             }
         });
     });
+
+    // Explicit handler for the Contact Us nav link to ensure it targets the contact section
+    const contactNavLink = document.getElementById('contactNavLink');
+    if (contactNavLink) {
+        contactNavLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                const headerHeight = document.querySelector('.navbar')?.offsetHeight || 0;
+                const targetPosition = contactSection.offsetTop - headerHeight;
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+            }
+        });
+    }
 }
 
 // Initialize smooth scrolling when DOM is loaded
@@ -476,15 +437,34 @@ function loadGalleryPhotos() {
     const photos = JSON.parse(localStorage.getItem('esiGalleryPhotos') || '[]');
     const photosGrid = document.querySelector('#photos .gallery-grid');
     
-    if (photosGrid && photos.length > 0) {
-        photosGrid.innerHTML = photos.map(photo => `
-            <div class="gallery-item">
-                <div class="image-placeholder">
-                    <img src="${photo.image.data}" alt="${photo.title}">
-                    <p>${photo.title}</p>
-                </div>
-            </div>
-        `).join('');
+    console.log('Loading gallery photos:', photos.length, 'found');
+    console.log('Photos grid element:', photosGrid);
+    
+    if (photosGrid) {
+        if (photos.length > 0) {
+            console.log('Rendering', photos.length, 'photos');
+            photosGrid.innerHTML = photos.map(photo => {
+                if (!photo || !photo.image || !photo.image.data) {
+                    console.warn('Invalid photo data:', photo);
+                    return '';
+                }
+                return `
+                    <div class="gallery-item">
+                        <div class="image-placeholder">
+                            <img src="${photo.image.data}" alt="${photo.title || 'Gallery Photo'}">
+                            <p>${photo.title || 'Untitled Photo'}</p>
+                        </div>
+                    </div>
+                `;
+            }).filter(html => html).join('');
+            
+            console.log('Photos rendered successfully');
+        } else {
+            console.log('No photos found, keeping default content');
+            // Keep default content if no photos
+        }
+    } else {
+        console.error('Photos grid element not found! Selector: #photos .gallery-grid');
     }
 }
 
@@ -521,9 +501,20 @@ function loadGalleryPress() {
     if (pressGrid && pressItems.length > 0) {
         pressGrid.innerHTML = pressItems.map(press => `
             <div class="press-item">
-                <h4>${press.title}</h4>
-                <p>${press.description || 'No description available'}</p>
-                ${press.link ? `<a href="${press.link}" target="_blank" class="press-link">Read More</a>` : ''}
+                ${press.image ? `
+                    <div class="press-cover">
+                        <img src="${press.image.data}" alt="${press.title}">
+                    </div>
+                ` : ''}
+                <div class="press-content">
+                    <div class="press-meta">
+                        ${press.type ? `<span class="category-badge">${press.type}</span>` : ''}
+                        ${press.date ? `<span class="press-date">${formatDate(press.date)}</span>` : ''}
+                    </div>
+                    <h4>${press.title}</h4>
+                    <p>${press.description || 'No description available'}</p>
+                    ${press.link ? `<a href="${press.link}" target="_blank" class="press-link">Read More</a>` : ''}
+                </div>
             </div>
         `).join('');
     }
@@ -1252,14 +1243,23 @@ document.addEventListener('DOMContentLoaded', () => {
             loadFeaturedCompetition();
         }
         if (e.key === 'esiGalleryUpdated') {
+            console.log('Gallery updated event detected, reloading gallery...');
             loadGalleryData();
-    
-    // Load activities content for welcome page
-    loadActivitiesContent();
-    
-    // Load home section content for welcome page
-    loadHomeSectionContent();
         }
+    });
+    
+    // Also listen for focus/visibility to refresh gallery when page becomes visible
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            console.log('Page visible, checking for gallery updates...');
+            loadGalleryData();
+        }
+    });
+    
+    // Refresh gallery when window gains focus
+    window.addEventListener('focus', () => {
+        console.log('Window focused, refreshing gallery...');
+        loadGalleryData();
     });
 });
 
@@ -1517,10 +1517,58 @@ window.addEventListener('storage', (e) => {
     }
 });
 
-
 // Home Section Content Loading Functions for Welcome Page
+let countdownIntervalId = null;
+
+function formatDateForDisplay(dateString) {
+    if (!dateString) return '';
+    
+    const parsedDate = normalizeDateString(dateString);
+    if (!parsedDate) return dateString;
+    
+    return parsedDate.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+function normalizeDateString(dateString) {
+    if (!dateString) return null;
+    
+    let parsedDate = new Date(dateString);
+    if (isNaN(parsedDate.getTime())) {
+        const cleaned = dateString.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
+        parsedDate = new Date(cleaned);
+    }
+    
+    if (isNaN(parsedDate.getTime())) {
+        return null;
+    }
+    
+    return parsedDate;
+}
+
+function sanitizeLegacyDefaultDate(value) {
+    if (!value) return '';
+    const trimmed = value.trim();
+    // Ignore old hard-coded defaults
+    if (/21(st)?\s+September\s+2025/i.test(trimmed)) return '';
+    if (trimmed === '2025-09-21') return '';
+    return trimmed;
+}
+
+function getDefaultEventDate() {
+    const fallbackDate = new Date();
+    fallbackDate.setDate(fallbackDate.getDate() + 30);
+    return fallbackDate.toISOString().split('T')[0];
+}
+
 function loadHomeSectionContent() {
     const homeData = JSON.parse(localStorage.getItem('esiHomeContent') || '{}');
+    // Drop legacy hard-coded defaults so we don’t keep showing them
+    homeData.eventDate = sanitizeLegacyDefaultDate(homeData.eventDate);
+    homeData.countdownDate = sanitizeLegacyDefaultDate(homeData.countdownDate);
     
     // Load hero badge
     if (homeData.heroBadge) {
@@ -1547,11 +1595,10 @@ function loadHomeSectionContent() {
     }
     
     // Load event date
-    if (homeData.eventDate) {
-        const dateElement = document.querySelector('.hero-detail:nth-child(1) span');
-        if (dateElement) {
-            dateElement.textContent = homeData.eventDate;
-        }
+    const dateElement = document.getElementById('eventDateDisplay') || document.querySelector('.hero-detail:nth-child(1) span');
+    if (dateElement) {
+        const formattedDate = formatDateForDisplay(homeData.eventDate);
+        dateElement.textContent = formattedDate || 'Select event date';
     }
     
     // Load event venue
@@ -1571,39 +1618,79 @@ function loadHomeSectionContent() {
     }
     
     // Update countdown timer
-    if (homeData.countdownDate && homeData.countdownTime) {
-        updateCountdownTimer(homeData.countdownDate, homeData.countdownTime, homeData.countdownMessage);
-    }
+    // Normalize stored date strings so old text values don't break parsing
+    const normalizedEventDate = normalizeDateString(homeData.eventDate);
+    const normalizedCountdownDate = normalizeDateString(homeData.countdownDate);
+    const countdownDate = (normalizedCountdownDate || normalizedEventDate || normalizeDateString(getDefaultEventDate()) || null);
+    const countdownTime = homeData.countdownTime || '00:00';
+    updateCountdownTimer(countdownDate, countdownTime, homeData.countdownMessage);
 }
 
 function updateCountdownTimer(countdownDate, countdownTime, countdownMessage) {
-    const targetDateTime = new Date(`${countdownDate}T${countdownTime}`).getTime();
-    const now = new Date().getTime();
-    const distance = targetDateTime - now;
-    
+    const countdownTimer = document.getElementById('countdownTimer');
+    if (countdownIntervalId) {
+        clearInterval(countdownIntervalId);
+        countdownIntervalId = null;
+    }
+    if (!countdownTimer || !countdownDate) {
+        return;
+    }
+
+    const targetDateTime = countdownDate instanceof Date
+        ? countdownDate.getTime()
+        : new Date(`${countdownDate}T${countdownTime || '00:00'}`).getTime();
+    if (isNaN(targetDateTime)) {
+        return;
+    }
+
+    // Prepare arrival message container without replacing the timer structure
+    let arrivalMessageEl = countdownTimer.querySelector('.arrival-message');
+    if (!arrivalMessageEl) {
+        arrivalMessageEl = document.createElement('div');
+        arrivalMessageEl.className = 'event-passed arrival-message';
+        arrivalMessageEl.style.display = 'none';
+        countdownTimer.appendChild(arrivalMessageEl);
+    }
+
+    const arrivalMessage = countdownMessage || 'Date has arrived!';
     const daysElement = document.getElementById('days');
     const hoursElement = document.getElementById('hours');
     const minutesElement = document.getElementById('minutes');
     const secondsElement = document.getElementById('seconds');
     
-    if (distance > 0) {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    const runCountdown = () => {
+        const now = new Date().getTime();
+        const distance = targetDateTime - now;
         
-        if (daysElement) daysElement.textContent = days.toString().padStart(2, '0');
-        if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
-        if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
-        if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
-    } else {
-        // Event has passed
-        const countdownTimer = document.getElementById('countdownTimer');
-        if (countdownTimer) {
-            countdownTimer.innerHTML = `<div class="event-passed">${countdownMessage || 'Event Day Has Arrived!'}</div>`;
+        if (distance > 0) {
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            if (daysElement) daysElement.textContent = days.toString().padStart(2, '0');
+            if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
+            if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
+            if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
+            
+            arrivalMessageEl.style.display = 'none';
+        } else {
+            if (daysElement) daysElement.textContent = '00';
+            if (hoursElement) hoursElement.textContent = '00';
+            if (minutesElement) minutesElement.textContent = '00';
+            if (secondsElement) secondsElement.textContent = '00';
+            
+            arrivalMessageEl.textContent = arrivalMessage;
+            arrivalMessageEl.style.display = 'block';
+            
             countdownTimer.style.animation = 'eventPassed 1s ease-out';
+            clearInterval(countdownIntervalId);
+            countdownIntervalId = null;
         }
-    }
+    };
+
+    runCountdown();
+    countdownIntervalId = setInterval(runCountdown, 1000);
 }
 
 // Listen for home content updates from admin dashboard

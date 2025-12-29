@@ -13,14 +13,14 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <h2>ESI Admin</h2>
-                <!-- <span class="logo-subtitle">Erudite Scholars Initiative</span> -->
+                <span class="logo-subtitle">Erudite Scholars Initiative</span>
             </div>
             <ul class="nav-menu">
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="index.html" class="nav-link">Back to Site</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
-                    <!-- <a href="#dashboard" class="nav-link">Dashboard</a> -->
+                    <a href="index.html" class="nav-link">Dashboard</a>
                 </li>
                 <li class="nav-item">
                     <a href="#registrations" class="nav-link">Registrations</a>
@@ -40,9 +40,9 @@
                 <li class="nav-item">
                     <a href="#gallery-management" class="nav-link">Gallery</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="#analytics" class="nav-link">Analytics</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a href="#" class="nav-link logout-link" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i> Logout
@@ -88,14 +88,14 @@
                         <span id="privateSchools">0</span> Private
                     </div>
                 </div>
-                <div class="stat-card">
+                <!-- <div class="stat-card">
                     <i class="fas fa-calendar-check"></i>
                     <h3 id="daysUntilEvent">0</h3>
                     <p>Days Until Event</p>
                     <div class="stat-detail">
                         <span id="eventDate">September 21, 2025</span>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div class="dashboard-quick-actions">
@@ -105,18 +105,18 @@
                         <i class="fas fa-download"></i>
                         Export Registrations
                     </button>
-                    <button class="quick-action-btn" onclick="sendBulkEmail()">
+                    <!-- <button class="quick-action-btn" onclick="sendBulkEmail()">
                         <i class="fas fa-envelope-open-text"></i>
                         Send Bulk Email
-                    </button>
+                    </button> -->
                     <button class="quick-action-btn" onclick="generateReport()">
                         <i class="fas fa-chart-bar"></i>
                         Generate Report
                     </button>
-                    <button class="quick-action-btn" onclick="manageEvent()">
+                    <!-- <button class="quick-action-btn" onclick="manageEvent()">
                         <i class="fas fa-cog"></i>
                         Event Settings
-                    </button>
+                    </button> -->
                 </div>
             </div>
         </div>
@@ -125,7 +125,12 @@
     <!-- Registrations Management Section -->
     <section id="registrations" class="registrations-management">
         <div class="container">
-            <h2>Manage Registrations</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0;">Manage Registrations</h2>
+                <button onclick="adminDashboard.loadRegistrations(); adminDashboard.updateDashboardStats();" class="btn-secondary" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
             
             <div class="registrations-filters">
                 <div class="filter-group">
@@ -189,7 +194,12 @@
     <!-- Messages Section -->
     <section id="messages" class="messages-section">
         <div class="container">
-            <h2>Contact Messages</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0;">Contact Messages</h2>
+                <button onclick="adminDashboard.loadMessages(); adminDashboard.updateDashboardStats();" class="btn-secondary" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
             
             <div class="messages-filters">
                 <div class="filter-group">
@@ -343,7 +353,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="eventDate">Event Date:</label>
-                            <input type="text" id="eventDate" placeholder="e.g., 21st September 2025">
+                            <input type="date" id="eventDate" placeholder="Select event date">
                         </div>
                         <div class="form-group">
                             <label for="eventVenue">Event Venue:</label>
@@ -377,7 +387,7 @@
                     
                     <div class="form-group">
                         <label for="countdownMessage">Event Passed Message:</label>
-                        <input type="text" id="countdownMessage" placeholder="e.g., Event Day Has Arrived!">
+                        <input type="text" id="countdownMessage" placeholder="e.g., Date has arrived!">
                     </div>
                     
                     <div class="countdown-preview">
@@ -418,7 +428,7 @@
                             <div class="hero-details">
                                 <div class="hero-detail">
                                     <i class="fas fa-calendar-alt"></i>
-                                    <span id="previewDate">21st September 2025</span>
+                                    <span id="previewDate">Select event date</span>
                                 </div>
                                 <div class="hero-detail">
                                     <i class="fas fa-map-marker-alt"></i>
@@ -594,19 +604,19 @@
                             <textarea id="photoDescription" name="description" rows="3" placeholder="Brief description of the photo"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="photoImage">Photo File *</label>
-                            <input type="file" id="photoImage" name="image" accept="image/*" class="file-input" required>
+                            <label for="photoImage">Photo Files *</label>
+                            <input type="file" id="photoImage" name="image" accept="image/*" class="file-input" multiple required>
                             <div class="file-input-info">
-                                <small>Upload a photo (JPG, PNG, GIF - Max 5MB)</small>
+                                <small>Upload up to 4 photos at once (JPG, PNG, GIF - Max 5MB each)</small>
                             </div>
                             <div id="photoPreview" class="image-preview" style="display: none;">
-                                <img id="previewPhotoImg" src="" alt="Photo preview">
+                                <div id="photoPreviewGrid" class="image-preview-grid"></div>
                                 <button type="button" class="remove-image-btn" onclick="removePhotoPreview()">
                                     <i class="fas fa-times"></i> Remove
                                 </button>
                             </div>
                         </div>
-                        <button type="submit" class="submit-btn">Add Photo</button>
+                        <button type="submit" class="submit-btn" id="addPhotoBtn">Add Photo</button>
                     </form>
                 </div>
                 
@@ -648,6 +658,12 @@
                                 <input type="file" id="videoFile" name="video" accept="video/*" class="file-input" required>
                                 <div class="file-input-info">
                                     <small>Upload a video (MP4, AVI, MOV - Max 50MB)</small>
+                                </div>
+                                <div id="videoPreview" class="image-preview" style="display: none;">
+                                    <div id="videoPreviewInfo" class="file-input-info"></div>
+                                    <button type="button" class="remove-image-btn" onclick="removePhotoPreview()">
+                                        <i class="fas fa-times"></i> Remove
+                                    </button>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -739,7 +755,7 @@
         </div>
     </section>
 
-    <!-- Analytics Section -->
+    <!-- Analytics Section
     <section id="analytics" class="analytics-section">
         <div class="container">
             <h2>Event Analytics</h2>
@@ -774,7 +790,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Footer -->
     <footer class="footer">

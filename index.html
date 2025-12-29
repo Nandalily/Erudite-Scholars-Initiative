@@ -22,13 +22,16 @@
                     <span class="logo-subtitle">Erudite Scholars Initiative</span>
                 </div>
             </div>
-            <br>
+            <!-- <br> -->`  
             <ul class="nav-menu">
                 <li class="nav-item">
                     <a href="#home" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#about" class="nav-link">About Us</a>
+                    <a href="#about-us" class="nav-link">About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#achievements" class="nav-link">Achievements</a>
                 </li>
                 <li class="nav-item">
                     <a href="#activities" class="nav-link">Activities</a>
@@ -40,13 +43,17 @@
                     <a href="#support-us" class="nav-link">Support Us</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#contact" class="nav-link">Contact Us</a>
+                    <a href="#contact" class="nav-link" id="contactNavLink">Contact Us</a>
                 </li>
                 <li class="nav-item">
                     <a href="#gallery" class="nav-link">Gallery</a>
                 </li>
+
                 <li class="nav-item">
-                    <a href="admin-login.html" class="nav-link admin-link">Admin</a>
+                    <a href="a.html" class="nav-link-link">~~</a>
+                </li>
+                <li class="nav-item">
+                    <a href="admin-login.html" class="nav-link admin-link">MrTn</a>
                 </li>
             </ul>
             <div class="hamburger">
@@ -67,7 +74,7 @@
             <div class="hero-details">
                 <div class="hero-detail">
                     <i class="fas fa-calendar-alt"></i>
-                    <span>21st September 2025</span>
+                    <span id="eventDateDisplay">Select event date</span>
                 </div>
                 <div class="hero-detail">
                     <i class="fas fa-map-marker-alt"></i>
@@ -97,8 +104,8 @@
                 </div>
             </div>
             <div class="hero-buttons">
-                <a href="#registration" class="cta-button primary">Register Now</a>
-                <a href="#activities" class="cta-button secondary">Learn More</a>
+                <a href="#upcoming-events" class="cta-button primary">Register Now</a>
+                <a href="#upcoming-events" class="cta-button secondary">Learn More</a>
             </div>
         </div>
         
@@ -134,10 +141,13 @@
         </div>
     </section>
 
-    <!-- Transitioning Images Section -->
-    <section class="images-strip-section">
-        <div class="hero-strip" aria-hidden="true"></div>
-    </section>
+             <!-- Transitioning Images Section -->
+             <section class="images-strip-section">
+                <div class="hero-strip" aria-hidden="true"></div>
+            </section>
+
+
+    <section id="about-us" > 
 
     <!-- Mission & Vision Section -->
     <section class="mission-vision">
@@ -184,7 +194,7 @@
                     </div>
                     <h3>Debate</h3>
                     <p>Engage in thought-provoking discussions on gender equality topics</p>
-                    <a href="#event" class="category-link">Learn More</a>
+                    <a href="#activities" class="category-link">Learn More</a>
                 </div>
                 <div class="category-card">
                     <div class="category-icon">
@@ -192,7 +202,7 @@
                     </div>
                     <h3>Poetry</h3>
                     <p>Express your thoughts on gender equality through creative poetry</p>
-                    <a href="#event" class="category-link">Learn More</a>
+                    <a href="#activities" class="category-link">Learn More</a>
                 </div>
                 <div class="category-card">
                     <div class="category-icon">
@@ -200,7 +210,7 @@
                     </div>
                     <h3>Public Speech</h3>
                     <p>Deliver powerful speeches advocating for gender equality</p>
-                    <a href="#event" class="category-link">Learn More</a>
+                    <a href="#activities" class="category-link">Learn More</a>
                 </div>
                 <div class="category-card">
                     <div class="category-icon">
@@ -208,16 +218,18 @@
                     </div>
                     <h3>Spelling Bee</h3>
                     <p>Showcase spelling mastery and language precision</p>
-                    <a href="#event" class="category-link">Learn More</a>
+                    <a href="#activities" class="category-link">Learn More</a>
                 </div>
             </div>
         </div>
     </section>
+    </section>
+
 
     <!-- About Us Section -->
     <section id="about" class="about">
         <div class="container">
-            <h2>About Erudite Scholars Initiative</h2>
+            <h2>About ESI</h2>
             <div class="about-content">
                 <div class="about-text">
                     <h3>Our Story Since 2019</h3>
@@ -342,6 +354,9 @@
                         </div>
                     </div>
                 </div>
+                </div>
+        </div>
+    </section>
                 
                 <!-- <div class="program-schedule">
                     <h3>Program Schedule</h3>
@@ -655,7 +670,7 @@
                         </div>
                         <h3>Registration Opens for 2025 Competition</h3>
                         <p>We're excited to announce that registration is now open for our annual Gender Equality Competition. This year's theme focuses on breaking down traditional gender roles.</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="#sdgs" class="read-more">Read More</a>
                     </div>
                 </article>
                 
@@ -672,7 +687,7 @@
                         </div>
                         <h3>The Importance of Men in Gender Equality</h3>
                         <p>Exploring how men can be allies in the fight for gender equality and why their participation is crucial for lasting change.</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="#sdgs" class="read-more">Read More</a>
                     </div>
                 </article>
                 
@@ -689,7 +704,7 @@
                         </div>
                         <h3>ESI's Impact on Student Leadership</h3>
                         <p>How our programs have helped develop leadership skills in students and prepared them for future challenges.</p>
-                        <a href="#" class="read-more">Read More</a>
+                        <a href="#sdgs" class="read-more">Read More</a>
                     </div>
                 </article>
             </div>
