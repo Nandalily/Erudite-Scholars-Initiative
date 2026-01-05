@@ -119,6 +119,7 @@ The website is specifically designed for the ESI 2025 event:
 - **Default Credentials**: 
   - Username: `admin`
   - Password: `martin2024`
+  --pasword: 'admin123'
 - **Session Management**: Automatic logout after 2 hours of inactivity
 - **Remember Me**: Option to extend session to 24 hours
 - **Brute Force Protection**: Account lockout after 5 failed attempts

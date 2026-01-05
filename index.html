@@ -2,89 +2,131 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1e3c72">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="format-detection" content="telephone=no">
     <title>Erudite Scholars Initiative - Gender Equality Competition 2025</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/ESIlogo.jpeg">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
+        
+        <!-- <div class="container nav-container"> -->
+           
+           
+            <ul class="nav-menu">
+<div class="nav-logo">
                 <img src="images/ESIlogo.jpeg" alt="ESI Logo" class="logo-image">
                 <div class="logo-text">
                     <h2>ESI</h2>
                     <span class="logo-subtitle">Erudite Scholars Initiative</span>
                 </div>
             </div>
-            <!-- <br> -->`  
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="#home" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#about-us" class="nav-link">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#achievements" class="nav-link">Achievements</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#activities" class="nav-link">Activities</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#upcoming-events" class="nav-link">Upcoming Events</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#support-us" class="nav-link">Support Us</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#contact" class="nav-link" id="contactNavLink">Contact Us</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#gallery" class="nav-link">Gallery</a>
-                </li>
 
                 <li class="nav-item">
-                    <a href="a.html" class="nav-link-link">~~</a>
+                    <a href="#home" class="nav-link active">
+                        <i class="fas fa-home btn-icon"></i>
+                        Home
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="admin-login.html" class="nav-link admin-link">MrTn</a>
+                    <a href="#about" class="nav-link">
+                        <!-- <i class="fas fa-info-circle btn-icon"></i> -->
+                        About_Us
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#achievements" class="nav-link">
+                        <!-- <i class="fas fa-trophy btn-icon"></i> -->
+                        Achievements
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#activities" class="nav-link">
+                        <!-- <i class="fas fa-calendar-alt btn-icon"></i> -->
+                        Activities
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#competitions" class="nav-link">
+                        <!-- <i class="fas fa-microphone-alt btn-icon"></i> -->
+                        Competitions
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#gallery" class="nav-link">
+                        <!-- <i class="fas fa-images btn-icon"></i> -->
+                        Gallery
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#support" class="nav-link">
+                        <!-- <i class="fas fa-handshake btn-icon"></i> -->
+                        SupportUs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link">
+                        <!-- <i class="fas fa-envelope btn-icon"></i> -->
+                        Contact
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="admin-login.html" class="nav-link admin-link">
+                        <!-- <i class="fas fa-user-shield btn-icon"></i> -->
+                        ****
+                    </a>
                 </li>
             </ul>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-        </div>
+             
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+       
     </nav>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
-        <div class="hero-watermark" aria-hidden="true"></div>
-        <div class="hero-content">
-            <div class="hero-badge">ESI 2025</div>
-            <h1>Equality Beyond Gender Roles</h1>
+        <div class="hero-content animate-fade-in-up">
+            <span class="hero-badge">ESI 2025</span>
+            <h1><span>Equality Beyond</span> Gender Roles</h1>
             <h2>A Gender Equality Debate, Poetry, and Public Speech Competition</h2>
-            <div class="hero-details">
-                <div class="hero-detail">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span id="eventDateDisplay">Select event date</span>
+            
+            <div class="hero-details-grid">
+                <div class="hero-detail-item">
+                    <i class="fas fa-calendar-alt hero-detail-icon"></i>
+                    <span id="eventDateDisplay">March 28, 2025</span>
                 </div>
-                <div class="hero-detail">
-                    <i class="fas fa-map-marker-alt"></i>
+                <div class="hero-detail-item">
+                    <i class="fas fa-map-marker-alt hero-detail-icon"></i>
                     <span>Mbogo Mixed Secondary School</span>
                 </div>
-                <div class="hero-detail">
-                    <i class="fas fa-users"></i>
+                <div class="hero-detail-item">
+                    <i class="fas fa-users hero-detail-icon"></i>
                     <span>Open to All Schools</span>
                 </div>
+                <!-- <div class="hero-detail-item">
+                    <i class="fas fa-clock hero-detail-icon"></i>
+                    <span>9:00 AM - 5:00 PM</span>
+                </div> -->
             </div>
+            
             <div class="countdown-timer" id="countdownTimer">
                 <div class="countdown-item">
                     <span id="days">00</span>
@@ -103,201 +145,238 @@
                     <label>Seconds</label>
                 </div>
             </div>
+            
             <div class="hero-buttons">
-                <a href="#upcoming-events" class="cta-button primary">Register Now</a>
-                <a href="#upcoming-events" class="cta-button secondary">Learn More</a>
-            </div>
-        </div>
-        
-        <!-- Featured Competition Section -->
-        <div class="featured-competition" id="featuredCompetition" style="display: none;">
-            <div class="container">
-                <div class="featured-competition-content">
-                    <div class="featured-badge">
-                        <i class="fas fa-star"></i>
-                        <span>Featured Competition</span>
-                    </div>
-                    <div class="featured-competition-card">
-                        <div class="featured-competition-image">
-                            <div class="featured-image-placeholder">
-                                <i class="fas fa-trophy"></i>
-                            </div>
-                        </div>
-                        <div class="featured-competition-info">
-                            <h3 class="featured-competition-title">Loading...</h3>
-                            <p class="featured-competition-description">Loading competition details...</p>
-                            <div class="featured-competition-meta">
-                                <span class="featured-category">Loading...</span>
-                                <span class="featured-deadline">Loading...</span>
-                            </div>
-                            <div class="featured-competition-actions">
-                                <button class="btn-register-featured" onclick="showRegistrationFormFromFeatured()">Register Now</button>
-                                <button class="btn-details-featured" onclick="showFeaturedCompetitionDetails()">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <a href="#registration" class="btn btn-primary">
+                    <i class="fas fa-user-plus btn-icon"></i>
+                    Register Now
+                </a>
+                <a href="#competitions" class="btn btn-secondary">
+                    <!-- <i class="fas fa-info-circle btn-icon"></i> -->
+                    Learn More
+                </a>
             </div>
         </div>
     </section>
-
-             <!-- Transitioning Images Section -->
-             <section class="images-strip-section">
-                <div class="hero-strip" aria-hidden="true"></div>
-            </section>
-
-
-    <section id="about-us" > 
 
     <!-- Mission & Vision Section -->
-    <section class="mission-vision">
+    <section class="section mission-vision">
         <div class="container">
-            <div class="mission-vision-grid">
-                <div class="mission-card">
-                    <div class="icon">
-                        <i class="fas fa-bullseye"></i>
+            <div class="section-title">
+                <h2>Our Core Values</h2>
+                <p class="section-subtitle">Driving change through education, leadership, and equality</p>
+            </div>
+            
+            <div class="grid grid-cols-3 mission-vision-grid">
+                <div class="card mission-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3 class="card-title">Our Mission</h3>
                     </div>
-                    <h3>Our Mission</h3>
-                    <p>To promote quality education, leadership development, and financial inclusion while fostering gender equality and social justice through innovative educational programs.</p>
+                    <div class="card-content">
+                        <p>To promote quality education, leadership development, and financial inclusion while fostering gender equality and social justice through innovative educational programs.</p>
+                    </div>
                 </div>
-                <div class="vision-card">
-                    <div class="icon">
-                        <i class="fas fa-eye"></i>
+                
+                <div class="card vision-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3 class="card-title">Our Vision</h3>
                     </div>
-                    <h3>Our Vision</h3>
-                    <p>A world where every individual has equal access to quality education and opportunities, regardless of gender, creating inclusive and empowered communities.</p>
+                    <div class="card-content">
+                        <p>A world where every individual has equal access to quality education and opportunities, regardless of gender, creating inclusive and empowered communities.</p>
+                    </div>
                 </div>
-                <div class="focus-card">
-                    <div class="icon">
-                        <i class="fas fa-star"></i>
+                
+                <div class="card focus-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3 class="card-title">Core Focus Areas</h3>
                     </div>
-                    <h3>Core Focus Areas</h3>
-                    <ul>
-                        <li>Quality Education</li>
-                        <li>Leadership Development</li>
-                        <li>Financial Inclusion</li>
-                        <li>Gender Equality</li>
-                    </ul>
+                    <div class="card-content">
+                        <ul class="focus-list">
+                            <li>Quality Education</li>
+                            <li> Leadership Development</li>
+                            <li> Financial Inclusion</li>
+                            <li> Gender Equality</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Quick Links Section -->
-    <section class="quick-links">
+    <!-- Competition Categories -->
+    <section class="section quick-links">
         <div class="container">
-            <h2>Competition Categories</h2>
-            <div class="quick-links-grid">
-                <div class="category-card">
+            <div class="section-title">
+                <h2>Competition Categories</h2>
+                <p class="section-subtitle">Choose your platform to advocate for gender equality</p>
+            </div>
+            
+            <div class="grid grid-cols-4 quick-links-grid">
+                <div class="category-card card">
                     <div class="category-icon">
                         <i class="fas fa-comments"></i>
                     </div>
                     <h3>Debate</h3>
                     <p>Engage in thought-provoking discussions on gender equality topics</p>
-                    <a href="#activities" class="category-link">Learn More</a>
+                    <a href="#activities" class="btn btn-secondary mt-4">
+                        Learn More
+                        <i class="fas fa-arrow-right btn-icon"></i>
+                    </a>
                 </div>
-                <div class="category-card">
+                
+                <div class="category-card card">
                     <div class="category-icon">
                         <i class="fas fa-feather-alt"></i>
                     </div>
                     <h3>Poetry</h3>
                     <p>Express your thoughts on gender equality through creative poetry</p>
-                    <a href="#activities" class="category-link">Learn More</a>
+                    <a href="#activities" class="btn btn-secondary mt-4">
+                        Learn More
+                        <i class="fas fa-arrow-right btn-icon"></i>
+                    </a>
                 </div>
-                <div class="category-card">
+                
+                <div class="category-card card">
                     <div class="category-icon">
                         <i class="fas fa-microphone"></i>
                     </div>
                     <h3>Public Speech</h3>
                     <p>Deliver powerful speeches advocating for gender equality</p>
-                    <a href="#activities" class="category-link">Learn More</a>
+                    <a href="#activities" class="btn btn-secondary mt-4">
+                        Learn More
+                        <i class="fas fa-arrow-right btn-icon"></i>
+                    </a>
                 </div>
-                <div class="category-card">
+                
+                <div class="category-card card">
                     <div class="category-icon">
                         <i class="fas fa-spell-check"></i>
                     </div>
                     <h3>Spelling Bee</h3>
                     <p>Showcase spelling mastery and language precision</p>
-                    <a href="#activities" class="category-link">Learn More</a>
+                    <a href="#activities" class="btn btn-secondary mt-4">
+                        Learn More
+                        <i class="fas fa-arrow-right btn-icon"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
-    </section>
-
 
     <!-- About Us Section -->
-    <section id="about" class="about">
+    <section id="about" class="section about">
         <div class="container">
-            <h2>About ESI</h2>
+            <div class="section-title">
+                <h2>About ESI</h2>
+                <p class="section-subtitle">Transforming education since 2019</p>
+            </div>
+            
             <div class="about-content">
                 <div class="about-text">
-                    <h3>Our Story Since 2019</h3>
-                    <p>Founded in 2019, Erudite Scholars Initiative (ESI) has been at the forefront of educational excellence and social transformation. We believe that education is the cornerstone of progress and that every individual deserves equal opportunities to succeed.</p>
-                    
-                    <h3>What We Do</h3>
-                    <p>ESI focuses on three core areas that drive sustainable development:</p>
-                    <ul>
-                        <li><strong>Quality Education:</strong> We develop innovative educational programs that enhance learning outcomes and critical thinking skills.</li>
-                        <li><strong>Leadership Development:</strong> We nurture young leaders who can drive positive change in their communities.</li>
-                        <li><strong>Financial Inclusion:</strong> We promote financial literacy and access to financial services for all.</li>
-                    </ul>
+                    <div class="card">
+                        <h3 class="card-title mb-4">Our Story</h3>
+                        <div class="card-content">
+                            <p>Founded in 2019, Erudite Scholars Initiative (ESI) has been at the forefront of educational excellence and social transformation. We believe that education is the cornerstone of progress and that every individual deserves equal opportunities to succeed.</p>
+                            
+                            <div class="grid grid-cols-2 mt-8">
+                                <div>
+                                    <h4 class="mb-2"><i class="fas fa-graduation-cap"></i> Quality Education</h4>
+                                    <p>We develop innovative educational programs that enhance learning outcomes and critical thinking skills.</p>
+                                </div>
+                                <div>
+                                    <h4 class="mb-2"><i class="fas fa-chess-king"></i> Leadership Development</h4>
+                                    <p>We nurture young leaders who can drive positive change in their communities.</p>
+                                </div>
+                                <div>
+                                    <h4 class="mb-2"><i class="fas fa-hand-holding-usd"></i> Financial Inclusion</h4>
+                                    <p>We promote financial literacy and access to financial services for all.</p>
+                                </div>
+                                <div>
+                                    <h4 class="mb-2"><i class="fas fa-users"></i> Community Impact</h4>
+                                    <p>We've impacted over 5,000 students across 50+ schools in our programs.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
                 <div class="about-image">
-                    <img src="images/10.jpeg" alt="ESI Team and Students at Past Event" class="about-img">
-                    <div class="image-caption">
-                        <p>ESI Team and Students at Past Event</p>
+                    <div class="card">
+                        <div class="card-content">
+                            <img src="images/10.jpeg" alt="ESI Team and Students at Past Event" class="about-img">
+                            <div class="image-caption mt-4">
+                                <p class="text-center"><i class="fas fa-image"></i> ESI Team and Students at Past Event</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Past Achievements Section -->
-    <section id="achievements" class="achievements">
+    <!-- Achievements Timeline -->
+    <section id="achievements" class="section achievements">
         <div class="container">
-            <h2>Past Achievements</h2>
+            <div class="section-title">
+                <h2>Some of Our Achievements</h2>
+                <p class="section-subtitle">Milestones and achievements since 2019</p>
+            </div>
+            
             <div class="timeline">
-                <div class="timeline-item">
-                    <div class="year">2019</div>
-                    <div class="achievement">
-                        <h3>Foundation Year</h3>
-                        <p>ESI was established with a vision to transform education and promote equality</p>
+                <div class="timeline-item animate-slide-in-left">
+                    <div class="timeline-year">2019</div>
+                    <div class="timeline-content card">
+                        <h3 class="timeline-title">Foundation Year</h3>
+                        <p class="timeline-description">ESI was established with a vision to transform education and promote equality</p>
                     </div>
                 </div>
-                <div class="timeline-item">
-                    <div class="year">2020</div>
-                    <div class="achievement">
-                        <h3>First Competition</h3>
-                        <p>Successfully organized our inaugural debate competition with 15 participating schools</p>
+                
+                <div class="timeline-item animate-slide-in-right">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-content card">
+                        <h3 class="timeline-title">First Competition</h3>
+                        <p class="timeline-description">Successfully organized our inaugural debate competition with 15 participating schools</p>
                     </div>
                 </div>
-                <div class="timeline-item">
-                    <div class="year">2021</div>
-                    <div class="achievement">
-                        <h3>Expansion</h3>
-                        <p>Added poetry and public speech categories, reaching 25 schools</p>
+                
+                <div class="timeline-item animate-slide-in-left">
+                    <div class="timeline-year">2021</div>
+                    <div class="timeline-content card">
+                        <h3 class="timeline-title">Expansion</h3>
+                        <p class="timeline-description">Added poetry and public speech categories, reaching 25 schools</p>
                     </div>
                 </div>
-                <div class="timeline-item">
-                    <div class="year">2022</div>
-                    <div class="achievement">
-                        <h3>Regional Recognition</h3>
-                        <p>Received regional award for excellence in youth development</p>
+                
+                <div class="timeline-item animate-slide-in-right">
+                    <div class="timeline-year">2022</div>
+                    <div class="timeline-content card">
+                        <h3 class="timeline-title">Regional Recognition</h3>
+                        <p class="timeline-description">Received regional award for excellence in youth development</p>
                     </div>
                 </div>
-                <div class="timeline-item">
-                    <div class="year">2023</div>
-                    <div class="achievement">
-                        <h3>Digital Transformation</h3>
-                        <p>Launched online registration and virtual competition options</p>
+                
+                <div class="timeline-item animate-slide-in-left">
+                    <div class="timeline-year">2023</div>
+                    <div class="timeline-content card">
+                        <h3 class="timeline-title">Digital Transformation</h3>
+                        <p class="timeline-description">Launched online registration and virtual competition options</p>
                     </div>
                 </div>
-                <div class="timeline-item">
-                    <div class="year">2024</div>
-                    <div class="achievement">
-                        <h3>Record Participation</h3>
-                        <p>Over 50 schools participated in our competitions</p>
+                
+                <div class="timeline-item animate-slide-in-right">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-content card">
+                        <h3 class="timeline-title">Record Participation</h3>
+                        <p class="timeline-description">Over 50 schools participated in our competitions</p>
                     </div>
                 </div>
             </div>
@@ -305,151 +384,138 @@
     </section>
 
     <!-- Activities Section -->
-    <section id="activities" class="event-details">
+    <section id="activities" class="section event-details">
         <div class="container">
-            <h2>Activities and Training Programs</h2>
-            <div class="event-content">
-                <div class="event-info">
-                    <h3>Background & Theme</h3>
-                    <p>Our 2025 competition focuses on "Equality Beyond Gender Roles," challenging participants to explore and articulate the importance of gender equality in modern society. This theme reflects our commitment to SDG 5 (Gender Equality) and our belief that true progress requires the active participation of all genders.</p>
-                    
-                    <h3>Objectives</h3>
-                    <ul>
-                        <li>Promote awareness of gender equality issues</li>
-                        <li>Encourage critical thinking and public speaking skills</li>
-                        <li>Foster dialogue between students from different backgrounds</li>
-                        <li>Highlight the role of education in achieving gender equality</li>
-                    </ul>
-                </div>
-                
-                <div class="competition-rules">
-                    <h3>Competition Rules & Judging Criteria</h3>
-                    <div class="rules-grid">
-                        <div class="rule-card">
-                            <h4>Debate</h4>
-                            <ul>
-                                <li>Team format: 3 students per team</li>
-                                <li>Time limit: 15 minutes per team</li>
-                                <li>Topics announced 1 week before</li>
-                                <li>Judged on argument strength, delivery, and teamwork</li>
-                            </ul>
-                        </div>
-                        <div class="rule-card">
-                            <h4>Poetry</h4>
-                            <ul>
-                                <li>Individual participation</li>
-                                <li>Original work required</li>
-                                <li>Time limit: 5 minutes</li>
-                                <li>Judged on creativity, message, and performance</li>
-                            </ul>
-                        </div>
-                        <div class="rule-card">
-                            <h4>Public Speech</h4>
-                            <ul>
-                                <li>Individual participation</li>
-                                <li>Time limit: 8 minutes</li>
-                                <li>Topics provided in advance</li>
-                                <li>Judged on content, delivery, and impact</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                </div>
-        </div>
-    </section>
-                
-                <!-- <div class="program-schedule">
-                    <h3>Program Schedule</h3>
-                    <div class="schedule-timeline">
-                        <div class="timeline-item">
-                            <div class="time">8:00 AM</div>
-                            <div class="event">Registration & Welcome</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="time">9:00 AM</div>
-                            <div class="event">Opening Ceremony</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="time">10:00 AM</div>
-                            <div class="event">Competition Rounds Begin</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="time">2:00 PM</div>
-                            <div class="event">Lunch Break</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="time">3:00 PM</div>
-                            <div class="event">Final Rounds</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="time">5:00 PM</div>
-                            <div class="event">Awards Ceremony</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="section-title">
+                <h2>Competition Details</h2>
+                <p class="section-subtitle">Rules, guidelines, and judging criteria</p>
             </div>
-        </div>
-    </section> -->
-
-    <!-- Upcoming Events Section -->
-    <section id="upcoming-events" class="upcoming-events">
-        <div class="container">
-            <h2>Upcoming Events</h2>
             
-            <!-- Competitions Display -->
-            <div class="competitions-display">
-                <h3>Current Competitions</h3>
-                <div id="competitionsGrid" class="competitions-grid">
-                    <!-- Competitions will be loaded here dynamically -->
+            <div class="card">
+                <div class="card-content">
+                    <div class="event-info mb-8">
+                        <h3 class="mb-4">Background & Theme</h3>
+                        <p>Our 2025 competition focuses on "Equality Beyond Gender Roles," challenging participants to explore and articulate the importance of gender equality in modern society. This theme reflects our commitment to SDG 5 (Gender Equality) and our belief that true progress requires the active participation of all genders.</p>
+                    </div>
+                    
+                    <div class="competition-rules">
+                        <h3 class="mb-4">Competition Rules & Judging Criteria</h3>
+                        <div class="grid grid-cols-3 rules-grid gap-6">
+                            <div class="rule-card card">
+                                <div class="card-header">
+                                    <div class="card-icon">
+                                        <i class="fas fa-comments"></i>
+                                    </div>
+                                    <h4 class="card-title">Debate</h4>
+                                </div>
+                                <div class="card-content">
+                                    <ul class="rule-list">
+                                        <li>Team format: 3 students per team</li>
+                                        <li>Time limit: 15 minutes per team</li>
+                                        <li>Topics announced 1 week before</li>
+                                        <li> Judged on argument strength, delivery, and teamwork</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="rule-card card">
+                                <div class="card-header">
+                                    <div class="card-icon">
+                                        <i class="fas fa-feather-alt"></i>
+                                    </div>
+                                    <h4 class="card-title">Poetry</h4>
+                                </div>
+                                <div class="card-content">
+                                    <ul class="rule-list">
+                                        <li> Individual participation</li>
+                                        <li> Original work required</li>
+                                        <li>Time limit: 5 minutes</li>
+                                        <li> Judged on creativity, message, and performance</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="rule-card card">
+                                <div class="card-header">
+                                    <div class="card-icon">
+                                        <i class="fas fa-microphone"></i>
+                                    </div>
+                                    <h4 class="card-title">Public Speech</h4>
+                                </div>
+                                <div class="card-content">
+                                    <ul class="rule-list">
+                                        <li> Individual participation</li>
+                                        <li> Time limit: 8 minutes</li>
+                                        <li>Topics provided in advance</li>
+                                        <li>Judged on content, delivery, and impact</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Registration Section -->
-    <section id="registration" class="registration" style="display: none;">
+    <!-- Upcoming Competitions -->
+    <section id="competitions" class="section upcoming-events">
         <div class="container">
-            <h2>Event Registration</h2>
-            <div class="registration-content">
-                <div class="registration-info">
-                    <h3>How to Register</h3>
-                    <p>Registration is open to all schools and individual participants. Complete the form below to secure your spot in this transformative event.</p>
-                    
-                    <div class="registration-steps">
-                        <div class="step">
-                            <div class="step-number">1</div>
-                            <div class="step-content">
-                                <h4>Fill Registration Form</h4>
+            <div class="section-title">
+                <h2>Current Competitions</h2>
+                <p class="section-subtitle">Register now for our 2025 events</p>
+            </div>
+            
+            <div id="competitionsGrid" class="grid grid-cols-3 competitions-grid gap-8">
+                <!-- Competition cards will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Form -->
+    <section id="registration" class="section registration">
+        <div class="container">
+            <div class="section-title">
+                <h2>Register Now</h2>
+                <p class="section-subtitle">Join the movement for gender equality</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-content">
+                    <div class="registration-steps mb-8">
+                        <div class="grid grid-cols-3 gap-6">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <h4>Fill Form</h4>
                                 <p>Complete all required fields with accurate information</p>
                             </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">2</div>
-                            <div class="step-content">
-                                <h4>Submit Application</h4>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <h4>Submit</h4>
                                 <p>Review and submit your registration</p>
                             </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">3</div>
-                            <div class="step-content">
+                            <div class="step">
+                                <div class="step-number">3</div>
                                 <h4>Confirmation</h4>
                                 <p>Receive confirmation email with event details</p>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="registration-form-container">
-                    <h3>Registration Form</h3>
+                    
                     <form id="registrationForm" class="registration-form">
-                        <div class="form-row">
+                        <div class="form-row grid grid-cols-2 gap-6 mb-6">
                             <div class="form-group">
-                                <label for="schoolName">School Name *</label>
+                                <label for="schoolName">
+                                    <i class="fas fa-school"></i>
+                                    School Name *
+                                </label>
                                 <input type="text" id="schoolName" name="schoolName" required>
                             </div>
                             <div class="form-group">
-                                <label for="schoolType">School Type</label>
+                                <label for="schoolType">
+                                    <i class="fas fa-university"></i>
+                                    School Type
+                                </label>
                                 <select id="schoolType" name="schoolType">
                                     <option value="">Select School Type</option>
                                     <option value="public">Public</option>
@@ -459,30 +525,45 @@
                             </div>
                         </div>
                         
-                        <div class="form-row">
+                        <div class="form-row grid grid-cols-2 gap-6 mb-6">
                             <div class="form-group">
-                                <label for="participantName">Participant Name *</label>
+                                <label for="participantName">
+                                    <i class="fas fa-user"></i>
+                                    Participant Name *
+                                </label>
                                 <input type="text" id="participantName" name="participantName" required>
                             </div>
                             <div class="form-group">
-                                <label for="participantClass">Class/Year *</label>
+                                <label for="participantClass">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    Class/Year *
+                                </label>
                                 <input type="text" id="participantClass" name="participantClass" required>
                             </div>
                         </div>
                         
-                        <div class="form-row">
+                        <div class="form-row grid grid-cols-2 gap-6 mb-6">
                             <div class="form-group">
-                                <label for="email">Email Address *</label>
+                                <label for="email">
+                                    <i class="fas fa-envelope"></i>
+                                    Email Address *
+                                </label>
                                 <input type="email" id="email" name="email" required>
                             </div>
                             <div class="form-group">
-                                <label for="phone">Phone Number</label>
+                                <label for="phone">
+                                    <i class="fas fa-phone"></i>
+                                    Phone Number
+                                </label>
                                 <input type="tel" id="phone" name="phone">
                             </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="competitionCategory">Competition Category *</label>
+                        <div class="form-group mb-6">
+                            <label for="competitionCategory">
+                                <i class="fas fa-trophy"></i>
+                                Competition Category *
+                            </label>
                             <select id="competitionCategory" name="competitionCategory" required>
                                 <option value="">Select Category</option>
                                 <option value="debate">Debate (Team of 3)</option>
@@ -491,160 +572,202 @@
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="teamMembers">Team Members (for Debate only)</label>
-                            <textarea id="teamMembers" name="teamMembers" rows="3" placeholder="List names of other team members if registering for debate"></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="motivation">Why do you want to participate? *</label>
+                        <div class="form-group mb-6">
+                            <label for="motivation">
+                                <i class="fas fa-bullhorn"></i>
+                                Why do you want to participate? *
+                            </label>
                             <textarea id="motivation" name="motivation" rows="4" required placeholder="Share your motivation for participating in this competition"></textarea>
                         </div>
                         
-                        <button type="submit" class="submit-btn">Submit Registration</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane btn-icon"></i>
+                            Submit Registration
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SDGs & Gender Equality Section -->
-    <section id="sdgs" class="sdgs">
+    <!-- SDGs Section -->
+    <section id="sdgs" class="section sdgs">
         <div class="container">
-            <h2>ESI's Focus on the SDGs</h2>
-            <div class="sdgs-content">
-                <div class="sdg-cards">
-                    <div class="sdg-card">
-                        <div class="sdg-icon">
+            <div class="section-title">
+                <h2>Our SDG Focus</h2>
+                <p class="section-subtitle">Contributing to the United Nations Sustainable Development Goals</p>
+            </div>
+            
+            <div class="grid grid-cols-3 sdg-cards gap-8 mb-12">
+                <div class="sdg-card card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #ea4c89, #d53a8d);">
                             <i class="fas fa-venus-mars"></i>
                         </div>
-                        <h3>SDG 5: Gender Equality</h3>
+                        <h3 class="card-title">SDG 5: Gender Equality</h3>
+                    </div>
+                    <div class="card-content">
                         <p>We actively promote gender equality by creating platforms where all voices are heard and valued equally.</p>
                     </div>
-                    <div class="sdg-card">
-                        <div class="sdg-icon">
+                </div>
+                
+                <div class="sdg-card card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #4CAF50, #2196F3);">
                             <i class="fas fa-heartbeat"></i>
                         </div>
-                        <h3>SDG 3: Good Health & Well-being</h3>
+                        <h3 class="card-title">SDG 3: Health & Well-being</h3>
+                    </div>
+                    <div class="card-content">
                         <p>Mental and emotional well-being is promoted through inclusive educational activities and peer support.</p>
                     </div>
-                    <div class="sdg-card">
-                        <div class="sdg-icon">
+                </div>
+                
+                <div class="sdg-card card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #2196F3, #1976D2);">
                             <i class="fas fa-graduation-cap"></i>
                         </div>
-                        <h3>SDG 4: Quality Education</h3>
+                        <h3 class="card-title">SDG 4: Quality Education</h3>
+                    </div>
+                    <div class="card-content">
                         <p>We ensure inclusive and equitable quality education for all, promoting lifelong learning opportunities.</p>
                     </div>
                 </div>
-                
-                <div class="gender-equality-content">
-                    <h3>Men's Role in Gender Equality</h3>
-                    <p>Gender equality is not just a women's issue—it's a human issue. Men play a crucial role in achieving true equality by:</p>
-                    <ul>
-                        <li>Challenging traditional gender stereotypes and norms</li>
-                        <li>Supporting women's leadership and participation</li>
-                        <li>Educating others about gender equality</li>
-                        <li>Creating inclusive environments in schools and communities</li>
-                        <li>Advocating for equal opportunities for all</li>
-                    </ul>
-                    
-                    <h3>Cultural Change Through Education</h3>
-                    <p>Education is the most powerful tool for cultural transformation. Through our competitions and programs, we:</p>
-                    <ul>
-                        <li>Challenge harmful gender norms and stereotypes</li>
-                        <li>Promote critical thinking about social issues</li>
-                        <li>Encourage dialogue and understanding</li>
-                        <li>Build empathy and respect for all individuals</li>
-                        <li>Create role models for future generations</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Media Gallery Section -->
-    <section id="gallery" class="gallery">
-        <div class="container">
-            <h2 >Media Gallery</h2>
-            <div class="gallery-tabs">
-                <button class="tab-btn active" data-tab="photos">Photos</button>
-                <button class="tab-btn" data-tab="videos">Videos</button>
-                <button class="tab-btn" data-tab="press">Press Coverage</button>
             </div>
             
-            <div class="gallery-content">
-                <div class="tab-content active" id="photos" style="display: block !important;">
-                    <div class="gallery-grid">
-                        <div class="gallery-item">
-                            <div class="image-placeholder">
-                                <img src="images/2.jpeg" alt="">
-                                <p>Past Competition Winners</p>
+            <div class="gender-equality-content">
+                <div class="card">
+                    <div class="card-content">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-users"></i>
+                            Men's Role in Gender Equality
+                        </h3>
+                        <p class="mb-4">Gender equality is not just a women's issue—it's a human issue. Men play a crucial role in achieving true equality.</p>
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="mb-2">How Men Can Help:</h4>
+                                <ul class="gender-list">
+                                    <li>Challenge traditional stereotypes</li>
+                                    <li>Support women's leadership</li>
+                                    <li>Educate others about equality</li>
+                                    <li>Create inclusive environments</li>
+                                </ul>
                             </div>
-                        </div>
-                        <div class="gallery-item">
-                            <div class="image-placeholder">
-                                <img src="images/14.jpeg" alt="">
-                                <p>Event Highlights</p>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <div class="image-placeholder">
-                                <img src="images/15.jpeg" alt="">
-                                <!-- <i class="fas fa-image"></i> -->
-                                <p>Outreach Programs</p>
-                            </div>
-                        </div>
-                        <div class="gallery-item">
-                            <div class="image-placeholder">
-                                <img src="images/19.jpeg" alt="">
-                                <p>Community Engagement</p>
+                            <div>
+                                <h4 class="mb-2">Cultural Transformation:</h4>
+                                <ul class="gender-list">
+                                    <li>Challenge harmful norms</li>
+                                    <li> Promote critical thinking</li>
+                                    <li> Encourage dialogue</li>
+                                    <li> Build empathy and respect</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="tab-content" id="videos" style="display: none !important;">
-                    <div class="video-grid">
-                        <div class="video-item">
-                            <video controls poster="images/2.jpeg" class="video-player" preload="metadata">
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" class="section gallery">
+        <div class="container">
+            <div class="section-title">
+                <h2>Media Gallery</h2>
+                <p class="section-subtitle">Capturing moments from our journey</p>
+            </div>
+            
+            <div class="gallery-tabs mb-8">
+                <button class="tab-btn active" data-tab="photos">
+                    <i class="fas fa-images"></i>
+                    Photos
+                </button>
+                <button class="tab-btn" data-tab="videos">
+                    <i class="fas fa-video"></i>
+                    Videos
+                </button>
+                <button class="tab-btn" data-tab="press">
+                    <i class="fas fa-newspaper"></i>
+                    Press
+                </button>
+            </div>
+            
+            <div class="tab-content active" id="photos">
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="images/2.jpeg" alt="Past Competition Winners">
+                        <div class="gallery-overlay">
+                            <h4>Competition Winners</h4>
+                            <p>2024 Awards Ceremony</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/14.jpeg" alt="Event Highlights">
+                        <div class="gallery-overlay">
+                            <h4>Event Highlights</h4>
+                            <p>Student Performances</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/15.jpeg" alt="Outreach Programs">
+                        <div class="gallery-overlay">
+                            <h4>Outreach Programs</h4>
+                            <p>Community Engagement</p>
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="images/19.jpeg" alt="Community Engagement">
+                        <div class="gallery-overlay">
+                            <h4>Community Work</h4>
+                            <p>Local School Visits</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="videos">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="video-card card">
+                        <div class="video-container">
+                            <video controls>
                                 <source src="videos/v1.mp4" type="video/mp4">
-                                Your browser does not support the video tag.
                             </video>
-                            <div class="video-info">
-                                <h4>Competition Highlights 2024</h4>
-                                <p>Watch the amazing performances from our previous competition winners</p>
-                                <div class="video-meta">
-                                    <span><i class="fas fa-calendar"></i> 2024</span>
-                                    <span><i class="fas fa-clock"></i> 3:45</span>
-                                </div>
-                            </div>
                         </div>
-                        <div class="video-item">
-                            <video controls poster="images/14.jpeg" class="video-player" preload="metadata">
+                        <div class="card-content">
+                            <h4>Competition Highlights 2024</h4>
+                            <p>Watch the amazing performances from our previous competition winners</p>
+                        </div>
+                    </div>
+                    <div class="video-card card">
+                        <div class="video-container">
+                            <video controls>
                                 <source src="videos/v2.mp4" type="video/mp4">
-                                Your browser does not support the video tag.
                             </video>
-                            <div class="video-info">
-                                <h4>Student Testimonials</h4>
-                                <p>Hear from participants about their experience with ESI programs</p>
-                                <div class="video-meta">
-                                    <span><i class="fas fa-calendar"></i> 2024</span>
-                                    <span><i class="fas fa-clock"></i> 2:30</span>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h4>Student Testimonials</h4>
+                            <p>Hear from participants about their experience with ESI programs</p>
                         </div>
                     </div>
                 </div>
-                
-                <div class="tab-content" id="press" style="display: none !important;">
-                    <div class="press-grid">
-                        <div class="press-item">
+            </div>
+            
+            <div class="tab-content" id="press">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="press-card card">
+                        <div class="card-content">
                             <h4>Local Newspaper Coverage</h4>
                             <p>ESI's impact on youth development featured in local media</p>
+                            <a href="#" class="btn btn-secondary mt-4">Read Article</a>
                         </div>
-                        <div class="press-item">
+                    </div>
+                    <div class="press-card card">
+                        <div class="card-content">
                             <h4>Radio Interview</h4>
                             <p>ESI representatives discuss gender equality in education</p>
+                            <a href="#" class="btn btn-secondary mt-4">Listen Now</a>
                         </div>
                     </div>
                 </div>
@@ -652,191 +775,245 @@
         </div>
     </section>
 
-    <!-- Blog/News Section -->
-    <section id="blog" class="blog">
+    <!-- Blog/News -->
+    <section id="blog" class="section blog">
         <div class="container">
-            <h2>Latest News & Updates</h2>
-            <div class="blog-grid">
-                <article class="blog-card">
+            <div class="section-title">
+                <h2>Latest Updates</h2>
+                <p class="section-subtitle">News and insights from ESI</p>
+            </div>
+            
+            <div class="grid grid-cols-3 blog-grid gap-8">
+                <article class="blog-card card">
                     <div class="blog-image">
-                        <div class="image-placeholder">
-                            <img src="images/10.jpeg" alt="">
-                        </div>
+                        <img src="images/10.jpeg" alt="Registration Opens">
                     </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span class="date">March 15, 2025</span>
-                            <span class="category">Event Updates</span>
+                    <div class="card-content">
+                        <div class="blog-meta mb-4">
+                            <span class="date"><i class="fas fa-calendar"></i> March 15, 2025</span>
+                            <span class="category"><i class="fas fa-tag"></i> Event Updates</span>
                         </div>
-                        <h3>Registration Opens for 2025 Competition</h3>
+                        <h3 class="card-title">Registration Opens for 2025 Competition</h3>
                         <p>We're excited to announce that registration is now open for our annual Gender Equality Competition. This year's theme focuses on breaking down traditional gender roles.</p>
-                        <a href="#sdgs" class="read-more">Read More</a>
+                        <a href="#sdgs" class="btn btn-secondary mt-4">
+                            Read More
+                            <i class="fas fa-arrow-right btn-icon"></i>
+                        </a>
                     </div>
                 </article>
                 
-                <article class="blog-card">
+                <article class="blog-card card">
                     <div class="blog-image">
-                        <div class="image-placeholder">
-                            <img src="images/11.jpeg" alt="">
-                        </div>
+                        <img src="images/11.jpeg" alt="Men in Gender Equality">
                     </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span class="date">March 10, 2025</span>
-                            <span class="category">Gender Equality</span>
+                    <div class="card-content">
+                        <div class="blog-meta mb-4">
+                            <span class="date"><i class="fas fa-calendar"></i> March 10, 2025</span>
+                            <span class="category"><i class="fas fa-tag"></i> Gender Equality</span>
                         </div>
-                        <h3>The Importance of Men in Gender Equality</h3>
+                        <h3 class="card-title">The Importance of Men in Gender Equality</h3>
                         <p>Exploring how men can be allies in the fight for gender equality and why their participation is crucial for lasting change.</p>
-                        <a href="#sdgs" class="read-more">Read More</a>
+                        <a href="#sdgs" class="btn btn-secondary mt-4">
+                            Read More
+                            <i class="fas fa-arrow-right btn-icon"></i>
+                        </a>
                     </div>
                 </article>
                 
-                <article class="blog-card">
+                <article class="blog-card card">
                     <div class="blog-image">
-                        <div class="image-placeholder">
-                            <img src="images/15.jpeg" alt="Student Leadership Development">
-                        </div>
+                        <img src="images/15.jpeg" alt="Student Leadership">
                     </div>
-                    <div class="blog-content">
-                        <div class="blog-meta">
-                            <span class="date">March 5, 2025</span>
-                            <span class="category">Education</span>
+                    <div class="card-content">
+                        <div class="blog-meta mb-4">
+                            <span class="date"><i class="fas fa-calendar"></i> March 5, 2025</span>
+                            <span class="category"><i class="fas fa-tag"></i> Education</span>
                         </div>
-                        <h3>ESI's Impact on Student Leadership</h3>
+                        <h3 class="card-title">ESI's Impact on Student Leadership</h3>
                         <p>How our programs have helped develop leadership skills in students and prepared them for future challenges.</p>
-                        <a href="#sdgs" class="read-more">Read More</a>
+                        <a href="#sdgs" class="btn btn-secondary mt-4">
+                            Read More
+                            <i class="fas fa-arrow-right btn-icon"></i>
+                        </a>
                     </div>
                 </article>
             </div>
         </div>
     </section>
 
-    <!-- Support Us Section -->
-    <section id="support-us" class="support-us">
+    <!-- Support Us -->
+    <section id="support" class="section support-us">
         <div class="container">
-            <h2>Support Us</h2>
-            <div class="support-content">
-                <div class="support-info">
-                    <h3>Join Our Mission</h3>
-                    <p>Your support helps us continue our work in promoting quality education, leadership development, and gender equality. There are many ways you can get involved:</p>
-                    
-                    <div class="support-options">
-                        <div class="support-option">
-                            <div class="support-icon">
-                                <i class="fas fa-hand-holding-heart"></i>
-                            </div>
-                            <h4>Volunteer</h4>
-                            <p>Share your time and expertise to help organize events, mentor students, or support our programs.</p>
+            <div class="section-title">
+                <h2>Support Our Mission</h2>
+                <p class="section-subtitle">Join us in creating lasting change</p>
+            </div>
+            
+            <div class="grid grid-cols-4 support-options gap-6 mb-12">
+                <div class="support-option card">
+                    <div class="card-content text-center">
+                        <div class="support-icon mb-4">
+                            <i class="fas fa-hand-holding-heart"></i>
                         </div>
-                        
-                        <div class="support-option">
-                            <div class="support-icon">
-                                <i class="fas fa-graduation-cap"></i>
-                            </div>
-                            <h4>Partnership</h4>
-                            <p>Schools, organizations, and businesses can partner with us to expand our reach and impact.</p>
-                        </div>
-                        
-                        <div class="support-option">
-                            <div class="support-icon">
-                                <i class="fas fa-bullhorn"></i>
-                            </div>
-                            <h4>Spread the Word</h4>
-                            <p>Help us reach more students and schools by sharing our mission and events.</p>
-                        </div>
-                        
-                        <div class="support-option">
-                            <div class="support-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <h4>Join Our Network</h4>
-                            <p>Connect with like-minded individuals and organizations working towards similar goals.</p>
-                        </div>
+                        <h4 class="card-title">Volunteer</h4>
+                        <p>Share your time and expertise to help organize events, mentor students, or support our programs.</p>
                     </div>
-                    
-                    <div class="support-cta">
-                        <h4>Ready to Make a Difference?</h4>
-                        <p>Contact us to learn more about how you can support our mission and get involved in our programs.</p>
-                        <a href="#contact" class="cta-button primary">Get Involved</a>
+                </div>
+                
+                <div class="support-option card">
+                    <div class="card-content text-center">
+                        <div class="support-icon mb-4">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h4 class="card-title">Partnership</h4>
+                        <p>Schools, organizations, and businesses can partner with us to expand our reach and impact.</p>
                     </div>
+                </div>
+                
+                <div class="support-option card">
+                    <div class="card-content text-center">
+                        <div class="support-icon mb-4">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h4 class="card-title">Spread the Word</h4>
+                        <p>Help us reach more students and schools by sharing our mission and events.</p>
+                    </div>
+                </div>
+                
+                <div class="support-option card">
+                    <div class="card-content text-center">
+                        <div class="support-icon mb-4">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h4 class="card-title">Join Our Network</h4>
+                        <p>Connect with like-minded individuals and organizations working towards similar goals.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="support-cta card">
+                <div class="card-content text-center">
+                    <h3 class="card-title mb-4">Ready to Make a Difference?</h3>
+                    <p class="mb-6">Contact us to learn more about how you can support our mission and get involved in our programs.</p>
+                    <a href="#contact" class="btn btn-primary">
+                        Get Involved
+                        <i class="fas fa-arrow-right btn-icon"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
+    <!-- Contact -->
+    <section id="contact" class="section contact">
         <div class="container">
-            <h2>Contact Us</h2>
-            <div class="contact-content">
+            <div class="section-title">
+                <h2>Contact Us</h2>
+                <p class="section-subtitle">Get in touch with our team</p>
+            </div>
+            
+            <div class="grid grid-cols-2 contact-content gap-12">
                 <div class="contact-info">
-                    <h3>Get in Touch</h3>
-                    <p>Have questions about our programs or want to get involved? We'd love to hear from you!</p>
-                    
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <h4>Address</h4>
-                                <p>Erudite Scholars Initiative<br>P.O. Box 12345<br>Kampala, Uganda</p>
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="card-title mb-4">Get in Touch</h3>
+                            <p class="mb-6">Have questions about our programs or want to get involved? We'd love to hear from you!</p>
+                            
+                            <div class="contact-details space-y-4">
+                                <div class="contact-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <div>
+                                        <h4>Address</h4>
+                                        <p>Erudite Scholars Initiative<br>P.O. Box 12345<br>Kampala, Uganda</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <div>
+                                        <h4>Phone</h4>
+                                        <p>+256 123 456 789</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <div>
+                                        <h4>Email</h4>
+                                        <p>info@eruditescholars.org</p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <div>
-                                <h4>Phone</h4>
-                                <p>+256 123 456 789</p>
+                            
+                            <div class="social-links mt-8">
+                                <h4 class="mb-4">Follow Us</h4>
+                                <div class="social-icons">
+                                    <a href="#" class="social-link" aria-label="Facebook">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="#" class="social-link" aria-label="Twitter">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                    <a href="#" class="social-link" aria-label="Instagram">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                    <a href="#" class="social-link" aria-label="LinkedIn">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                    <a href="#" class="social-link" aria-label="YouTube">
+                                        <i class="fab fa-youtube"></i>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <h4>Email</h4>
-                                <p>info@eruditescholars.org</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="social-links">
-                        <h4>Follow Us</h4>
-                        <div class="social-icons">
-                            <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
                         </div>
                     </div>
                 </div>
                 
                 <div class="contact-form-container">
-                    <h3>Send us a Message</h3>
-                    <form id="contactForm" class="contact-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="name">Name *</label>
-                                <input type="text" id="name" name="name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email *</label>
-                                <input type="email" id="email" name="email" required>
-                            </div>
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="card-title mb-4">Send us a Message</h3>
+                            <form id="contactForm" class="contact-form">
+                                <div class="form-row grid grid-cols-2 gap-6 mb-6">
+                                    <div class="form-group">
+                                        <label for="name">
+                                            <i class="fas fa-user"></i>
+                                            Name *
+                                        </label>
+                                        <input type="text" id="name" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">
+                                            <i class="fas fa-envelope"></i>
+                                            Email *
+                                        </label>
+                                        <input type="email" id="email" name="email" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group mb-6">
+                                    <label for="subject">
+                                        <i class="fas fa-tag"></i>
+                                        Subject *
+                                    </label>
+                                    <input type="text" id="subject" name="subject" required>
+                                </div>
+                                
+                                <div class="form-group mb-6">
+                                    <label for="message">
+                                        <i class="fas fa-comment"></i>
+                                        Message *
+                                    </label>
+                                    <textarea id="message" name="message" rows="5" required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane btn-icon"></i>
+                                    Send Message
+                                </button>
+                            </form>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="subject">Subject *</label>
-                            <input type="text" id="subject" name="subject" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Message *</label>
-                            <textarea id="message" name="message" rows="5" required></textarea>
-                        </div>
-                        
-                        <button type="submit" class="submit-btn">Send Message</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -845,46 +1022,60 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
+            <div class="footer-grid">
+                <div class="footer-logo">
+                    <img src="images/ESIlogo.jpeg" alt="ESI Logo">
                     <h3>Erudite Scholars Initiative</h3>
                     <p>Promoting quality education, leadership development, and gender equality since 2019.</p>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
-                    </div>
                 </div>
                 
-                <div class="footer-section">
+                <div class="footer-links">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="#home">Home</a></li>
                         <li><a href="#about">About Us</a></li>
                         <li><a href="#activities">Activities</a></li>
-                        <li><a href="#upcoming-events">Upcoming Events</a></li>
+                        <li><a href="#competitions">Competitions</a></li>
                         <li><a href="#contact">Contact Us</a></li>
                     </ul>
                 </div>
                 
-                <div class="footer-section">
+                <div class="footer-links">
                     <h4>Programs</h4>
                     <ul>
                         <li><a href="#activities">Debate Competition</a></li>
                         <li><a href="#activities">Poetry Contest</a></li>
                         <li><a href="#activities">Public Speech</a></li>
-                        <li><a href="#activities">Past Events</a></li>
+                        <li><a href="#gallery">Past Events</a></li>
                     </ul>
                 </div>
                 
-                <div class="footer-section">
-                    <h4>Partners & Sponsors</h4>
-                    <div class="partner-logos">
-                        <div class="partner-logo">Partner 1</div>
-                        <div class="partner-logo">Partner 2</div>
-                        <div class="partner-logo">Partner 3</div>
+                <div class="footer-contact">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-envelope"></i> info@eruditescholars.org</p>
+                    <p><i class="fas fa-phone"></i> +256 123 456 789</p>
+                    
+                    <div class="social-links mt-4">
+                        <a href="#" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
                     </div>
+                      <li class="nav-item">
+                    <a href="admin-login.html" class="nav-link admin-link">
+                        <!-- <i class="fas fa-user-shield btn-icon"></i> -->
+                        Admin
+                    </a>
+                </li>
+                    
                 </div>
             </div>
             
@@ -896,13 +1087,56 @@
 
     <!-- Success Modal -->
     <div id="successModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3>Success!</h3>
-            <p id="modalMessage"></p>
+        <div class="modal-content card">
+            <div class="card-content text-center">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h3 class="card-title mt-4">Success!</h3>
+                <p id="modalMessage" class="mb-6">Your registration has been submitted successfully!</p>
+                <button class="btn btn-primary" onclick="closeModal()">
+                    <i class="fas fa-check btn-icon"></i>
+                    Continue
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script src="script.js"></script>
+    
+    <!-- Initialize the site -->
+    <script>
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set countdown to March 28, 2025
+            const eventDate = new Date('March 28, 2025 09:00:00').getTime();
+            
+            // Update countdown every second
+            const countdown = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = eventDate - now;
+                
+                // Calculate days, hours, minutes, seconds
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Display the results
+                document.getElementById('days').innerHTML = days.toString().padStart(2, '0');
+                document.getElementById('hours').innerHTML = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').innerHTML = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').innerHTML = seconds.toString().padStart(2, '0');
+                
+                // If the countdown is over
+                if (distance < 0) {
+                    clearInterval(countdown);
+                    document.getElementById('countdownTimer').innerHTML = "Event has started!";
+                }
+            }, 1000);
+            
+            // Set current date display
+            document.getElementById('eventDateDisplay').textContent = 'March 28, 2025';
+        });
+    </script>
 </body>
-</html> 
+</html>

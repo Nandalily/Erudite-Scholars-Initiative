@@ -1,5 +1,4 @@
 // ESI Admin Dashboard System
-
 class AdminDashboard {
     constructor() {
         this.currentPage = 1;
@@ -35,6 +34,9 @@ class AdminDashboard {
         this.loadCompetitions();
         this.setupModals();
         this.updateCountdown();
+        this.loadGalleryData();
+        this.loadActivitiesContent();
+        this.loadHomeContent();
     }
 
     checkAuthentication() {
@@ -130,9 +132,7 @@ class AdminDashboard {
             compFileInput.addEventListener('change', (e) => this.handleFileUpload(e));
         }
 
-        // Gallery management event listeners will be attached via attachGalleryFormListeners
-        // This ensures they're attached even when tabs are switched
-        
+        // Gallery management event listeners
         const videoFileInput = document.getElementById('videoFile');
         if (videoFileInput) {
             videoFileInput.addEventListener('change', (e) => this.handleGalleryVideoUpload(e));
@@ -169,7 +169,7 @@ class AdminDashboard {
         galleryTabBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 this.switchGalleryTab(e);
-                // Re-attach form listeners when switching tabs (in case they weren't attached initially)
+                // Re-attach form listeners when switching tabs
                 setTimeout(() => this.attachGalleryFormListeners(), 100);
             });
         });
@@ -240,8 +240,7 @@ class AdminDashboard {
             });
         }
         
-        // Listen for localStorage changes (e.g., new registrations from welcome page)
-        // Note: storage event only fires for changes from OTHER tabs/windows
+        // Listen for localStorage changes
         window.addEventListener('storage', (e) => {
             if (e.key === 'esiRegistrations') {
                 const newCount = JSON.parse(e.newValue || '[]').length;
@@ -419,40 +418,84 @@ class AdminDashboard {
     loadDashboardData() {
         this.updateDashboardStats();
         this.updateCountdown();
-        this.loadGalleryData();
     }
 
-    updateDashboardStats() {
-        const registrations = JSON.parse(localStorage.getItem('esiRegistrations') || '[]');
-        const messages = JSON.parse(localStorage.getItem('esiContactMessages') || '[]');
-        
-        // Total registrations
-        document.getElementById('totalRegistrations').textContent = registrations.length;
-        
-        // Category breakdown
-        const debateCount = registrations.filter(r => r.competitionCategory === 'debate').length;
-        const poetryCount = registrations.filter(r => r.competitionCategory === 'poetry').length;
-        const speechCount = registrations.filter(r => r.competitionCategory === 'public-speech').length;
-        
-        document.getElementById('debateRegistrations').textContent = debateCount;
-        document.getElementById('poetryRegistrations').textContent = poetryCount;
-        document.getElementById('speechRegistrations').textContent = speechCount;
-        
-        // Messages
-        document.getElementById('totalMessages').textContent = messages.length;
-        const unreadCount = messages.filter(m => !m.read).length;
-        document.getElementById('unreadMessages').textContent = unreadCount;
-        
-        // Schools
-        const uniqueSchools = new Set(registrations.map(r => r.schoolName));
-        document.getElementById('totalSchools').textContent = uniqueSchools.size;
-        
-        const publicSchools = registrations.filter(r => r.schoolType === 'public').length;
-        const privateSchools = registrations.filter(r => r.schoolType === 'private').length;
-        
-        document.getElementById('publicSchools').textContent = publicSchools;
-        document.getElementById('privateSchools').textContent = privateSchools;
+   updateDashboardStats() {
+    const registrations = JSON.parse(localStorage.getItem('esiRegistrations') || '[]');
+    const messages = JSON.parse(localStorage.getItem('esiContactMessages') || '[]');
+    
+    // Update main dashboard stats
+    document.getElementById('totalRegistrations').textContent = registrations.length;
+    
+    // Category breakdown
+    const debateCount = registrations.filter(r => r.competitionCategory === 'debate').length;
+    const poetryCount = registrations.filter(r => r.competitionCategory === 'poetry').length;
+    const speechCount = registrations.filter(r => r.competitionCategory === 'public-speech').length;
+    
+    document.getElementById('debateRegistrations').textContent = debateCount;
+    document.getElementById('poetryRegistrations').textContent = poetryCount;
+    document.getElementById('speechRegistrations').textContent = speechCount;
+    
+    // Messages
+    document.getElementById('totalMessages').textContent = messages.length;
+    const unreadCount = messages.filter(m => !m.read).length;
+    document.getElementById('unreadMessages').textContent = unreadCount;
+    
+    // Schools
+    const uniqueSchools = new Set(registrations.map(r => r.schoolName));
+    document.getElementById('totalSchools').textContent = uniqueSchools.size;
+    
+    const publicSchools = registrations.filter(r => r.schoolType === 'public').length;
+    const privateSchools = registrations.filter(r => r.schoolType === 'private').length;
+    
+    document.getElementById('publicSchools').textContent = publicSchools;
+    document.getElementById('privateSchools').textContent = privateSchools;
+    
+    // Update header status indicators
+    document.getElementById('totalRegistrationsLarge').textContent = registrations.length;
+    document.getElementById('totalMessagesLarge').textContent = messages.length;
+    document.getElementById('totalSchoolsLarge').textContent = uniqueSchools.size;
+    
+    // Update notifications in nav
+    this.updateNavNotifications(registrations.length, unreadCount);
+    
+    // Update admin username in header
+    this.updateAdminUsername();
+}
+
+updateNavNotifications(regCount, unreadMsgCount) {
+    const regNotification = document.getElementById('regNotification');
+    const msgNotification = document.getElementById('msgNotification');
+    
+    if (regNotification) {
+        if (regCount > 0) {
+            regNotification.textContent = regCount;
+            regNotification.style.display = 'flex';
+        } else {
+            regNotification.style.display = 'none';
+        }
     }
+    
+    if (msgNotification) {
+        if (unreadMsgCount > 0) {
+            msgNotification.textContent = unreadMsgCount;
+            msgNotification.style.display = 'flex';
+        } else {
+            msgNotification.style.display = 'none';
+        }
+    }
+}
+
+updateAdminUsername() {
+    const adminUsername = localStorage.getItem('adminUsername') || 'Admin';
+    const usernameElements = document.querySelectorAll('#adminUsername, #adminUsernameLarge');
+    
+    usernameElements.forEach(element => {
+        if (element) {
+            element.textContent = adminUsername;
+        }
+    });
+}
 
     updateCountdown() {
         const eventDate = new Date('September 21, 2025 09:00:00').getTime();
@@ -936,26 +979,15 @@ class AdminDashboard {
         e.stopPropagation();
         
         console.log('handleAddPhoto called');
-        console.log('Event target:', e.target);
-        console.log('currentGalleryPhotosData:', this.currentGalleryPhotosData);
         
         const form = e.target;
-        if (!form || form.tagName !== 'FORM') {
-            console.error('Invalid form element');
-            this.showNotification('Form submission error. Please try again.', 'error');
-            return;
-        }
-        
         const formData = new FormData(form);
         const photosToSave = this.currentGalleryPhotosData || [];
-        const baseTitle = formData.get('title') || 'Untitled Photo';
-        const category = formData.get('category');
-        const description = formData.get('description');
         
         console.log('Form data:', {
-            title: baseTitle,
-            category: category,
-            description: description,
+            title: formData.get('title'),
+            category: formData.get('category'),
+            description: formData.get('description'),
             photosCount: photosToSave.length
         });
         
@@ -990,18 +1022,12 @@ class AdminDashboard {
                     return;
                 }
                 
-                // Check individual photo data size
-                const photoDataSize = new Blob([photoImage.data]).size;
-                if (photoDataSize > 10 * 1024 * 1024) { // 10MB per photo
-                    console.warn(`Photo ${index} is very large: ${(photoDataSize / (1024 * 1024)).toFixed(2)}MB`);
-                }
-                
                 try {
                     photos.push({
                         id: `${timestamp}-${index}`,
-                        title: photosToSave.length > 1 ? `${baseTitle} (${index + 1})` : baseTitle,
-                        category,
-                        description,
+                        title: photosToSave.length > 1 ? `${formData.get('title') || 'Untitled Photo'} (${index + 1})` : (formData.get('title') || 'Untitled Photo'),
+                        category: formData.get('category') || 'other',
+                        description: formData.get('description') || '',
                         image: {
                             name: photoImage.name || `photo-${index}.jpg`,
                             type: photoImage.type || 'image/jpeg',
@@ -1038,21 +1064,11 @@ class AdminDashboard {
             } catch (storageError) {
                 console.error('localStorage.setItem failed:', storageError);
                 if (storageError.name === 'QuotaExceededError' || storageError.code === 22) {
-                    throw new Error('Storage quota exceeded. Please delete some old photos or use smaller images.');
+                    this.showNotification('Storage quota exceeded. Please delete some old photos or use smaller images.', 'error');
+                    return;
                 }
-                throw storageError;
-            }
-            
-            // Verify the data was saved correctly
-            const verifyPhotos = JSON.parse(localStorage.getItem('esiGalleryPhotos') || '[]');
-            console.log('Verification - Photos in localStorage:', verifyPhotos.length);
-            if (verifyPhotos.length > 0) {
-                console.log('Sample photo structure:', {
-                    id: verifyPhotos[verifyPhotos.length - 1].id,
-                    title: verifyPhotos[verifyPhotos.length - 1].title,
-                    hasImage: !!verifyPhotos[verifyPhotos.length - 1].image,
-                    hasImageData: !!(verifyPhotos[verifyPhotos.length - 1].image && verifyPhotos[verifyPhotos.length - 1].image.data)
-                });
+                this.showNotification('Error saving photos. Please try again.', 'error');
+                return;
             }
             
             this.loadGalleryPhotos();
@@ -1064,23 +1080,10 @@ class AdminDashboard {
                 this.refreshWelcomePageGallery();
             }, 100);
             
-            this.showNotification(`Successfully added ${savedCount} photo(s)! The gallery will update automatically.`, 'success');
+            this.showNotification(`Successfully added ${savedCount} photo(s)!`, 'success');
         } catch (error) {
             console.error('Error saving photos:', error);
-            console.error('Error details:', {
-                name: error.name,
-                message: error.message,
-                stack: error.stack
-            });
-            
-            // Check if it's a quota exceeded error
-            if (error.name === 'QuotaExceededError' || error.message.includes('quota') || error.message.includes('storage')) {
-                this.showNotification('Storage limit exceeded. Please reduce the number or size of photos. Each photo should be under 5MB.', 'error');
-            } else {
-                // Show more detailed error message
-                const errorMsg = error.message || 'Unknown error occurred';
-                this.showNotification(`Error saving photos: ${errorMsg}. Please try again with smaller images.`, 'error');
-            }
+            this.showNotification('Failed to save photos. Please try again.', 'error');
         }
     }
 
@@ -1191,7 +1194,7 @@ class AdminDashboard {
                     this.currentGalleryPhotosData = images;
                     console.log('Stored photos data:', this.currentGalleryPhotosData);
                     this.renderPhotoPreviews(images);
-                    this.showNotification(`${images.length} photo(s) selected. Click "Add Photo" to upload.`, 'success');
+                    this.showNotification(`${images.length} photo(s) selected. Click "Add Photos" to upload.`, 'success');
                 })
                 .catch((error) => {
                     console.error('Error processing photos:', error);
@@ -1381,23 +1384,33 @@ class AdminDashboard {
         const photosList = document.getElementById('photosList');
         
         if (photosList) {
-            photosList.innerHTML = photos.map(photo => `
-                <div class="gallery-item-admin">
-                    <div class="gallery-item-image">
-                        <img src="${photo.image.data}" alt="${photo.title}">
+            if (photos.length === 0) {
+                photosList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-images"></i>
+                        <h4>No Photos Yet</h4>
+                        <p>Upload photos to display in your gallery</p>
                     </div>
-                    <div class="gallery-item-info">
-                        <h4>${photo.title}</h4>
-                        <p>${photo.description || 'No description'}</p>
-                        <span class="category-badge">${photo.category}</span>
+                `;
+            } else {
+                photosList.innerHTML = photos.map(photo => `
+                    <div class="gallery-item-admin">
+                        <div class="gallery-item-image">
+                            <img src="${photo.image.data}" alt="${photo.title}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjQwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y1ZjdmYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5QaG90byBFcnJvcjwvdGV4dD48L3N2Zz4='">
+                        </div>
+                        <div class="gallery-item-info">
+                            <h4>${photo.title}</h4>
+                            <p>${photo.description || 'No description'}</p>
+                            <span class="category-badge">${photo.category}</span>
+                        </div>
+                        <div class="gallery-item-actions">
+                            <button class="btn btn-danger btn-small" onclick="adminDashboard.deleteGalleryItem('photo', '${photo.id}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
                     </div>
-                    <div class="gallery-item-actions">
-                        <button class="btn-small btn-danger" onclick="adminDashboard.deleteGalleryItem('photo', '${photo.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
     }
 
@@ -1406,26 +1419,36 @@ class AdminDashboard {
         const videosList = document.getElementById('videosList');
         
         if (videosList) {
-            videosList.innerHTML = videos.map(video => `
-                <div class="gallery-item-admin">
-                    <div class="gallery-item-image">
-                        ${video.thumbnail ? 
-                            `<img src="${video.thumbnail.data}" alt="${video.title}">` : 
-                            `<div class="video-placeholder"><i class="fas fa-video"></i></div>`
-                        }
+            if (videos.length === 0) {
+                videosList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-video"></i>
+                        <h4>No Videos Yet</h4>
+                        <p>Upload videos to display in your gallery</p>
                     </div>
-                    <div class="gallery-item-info">
-                        <h4>${video.title}</h4>
-                        <p>${video.description || 'No description'}</p>
-                        <span class="category-badge">${video.category}</span>
+                `;
+            } else {
+                videosList.innerHTML = videos.map(video => `
+                    <div class="gallery-item-admin">
+                        <div class="gallery-item-image">
+                            ${video.thumbnail ? 
+                                `<img src="${video.thumbnail.data}" alt="${video.title}">` : 
+                                `<div class="video-placeholder"><i class="fas fa-video"></i></div>`
+                            }
+                        </div>
+                        <div class="gallery-item-info">
+                            <h4>${video.title}</h4>
+                            <p>${video.description || 'No description'}</p>
+                            <span class="category-badge">${video.category}</span>
+                        </div>
+                        <div class="gallery-item-actions">
+                            <button class="btn btn-danger btn-small" onclick="adminDashboard.deleteGalleryItem('video', '${video.id}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
                     </div>
-                    <div class="gallery-item-actions">
-                        <button class="btn-small btn-danger" onclick="adminDashboard.deleteGalleryItem('video', '${video.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
     }
 
@@ -1434,29 +1457,45 @@ class AdminDashboard {
         const pressList = document.getElementById('pressList');
         
         if (pressList) {
-            pressList.innerHTML = pressItems.map(press => `
-                <div class="gallery-item-admin">
-                    <div class="gallery-item-image">
-                        ${press.image ? 
-                            `<img src="${press.image.data}" alt="${press.title}">` : 
-                            `<div class="press-placeholder"><i class="fas fa-newspaper"></i></div>`
-                        }
+            if (pressItems.length === 0) {
+                pressList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-newspaper"></i>
+                        <h4>No Press Coverage Yet</h4>
+                        <p>Add press coverage items to display in your gallery</p>
                     </div>
-                    <div class="gallery-item-info">
-                        <h4>${press.title}</h4>
-                        <p>${press.description || 'No description'}</p>
-                        <span class="category-badge">${press.type}</span>
-                        ${press.date ? `<small>Date: ${press.date}</small>` : ''}
-                        ${press.link ? `<small><a href="${press.link}" target="_blank">View Article</a></small>` : ''}
+                `;
+            } else {
+                pressList.innerHTML = pressItems.map(press => `
+                    <div class="gallery-item-admin">
+                        <div class="gallery-item-image">
+                            ${press.image ? 
+                                `<img src="${press.image.data}" alt="${press.title}">` : 
+                                `<div class="press-placeholder"><i class="fas fa-newspaper"></i></div>`
+                            }
+                        </div>
+                        <div class="gallery-item-info">
+                            <h4>${press.title}</h4>
+                            <p>${press.description || 'No description'}</p>
+                            <span class="category-badge">${press.type}</span>
+                            ${press.date ? `<small>Date: ${press.date}</small>` : ''}
+                            ${press.link ? `<small><a href="${press.link}" target="_blank">View Article</a></small>` : ''}
+                        </div>
+                        <div class="gallery-item-actions">
+                            <button class="btn btn-danger btn-small" onclick="adminDashboard.deleteGalleryItem('press', '${press.id}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
                     </div>
-                    <div class="gallery-item-actions">
-                        <button class="btn-small btn-danger" onclick="adminDashboard.deleteGalleryItem('press', '${press.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
         }
+    }
+
+    loadGalleryData() {
+        this.loadGalleryPhotos();
+        this.loadGalleryVideos();
+        this.loadGalleryPress();
     }
 
     deleteGalleryItem(type, id) {
@@ -1474,6 +1513,8 @@ class AdminDashboard {
                 storageKey = 'esiGalleryPress';
                 loadFunction = () => this.loadGalleryPress();
                 break;
+            default:
+                return;
         }
         
         const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
@@ -1487,44 +1528,8 @@ class AdminDashboard {
         this.refreshWelcomePageGallery();
     }
 
-    refreshWelcomePageGallery() {
-        console.log('Refreshing welcome page gallery...');
-        
-        // Check if welcome page is open and refresh gallery
-        if (window.opener && window.opener.loadGalleryData) {
-            console.log('Calling loadGalleryData on opener window');
-            window.opener.loadGalleryData();
-        }
-        
-        // Also try to refresh if using localStorage events
-        try {
-            const timestamp = Date.now().toString();
-            localStorage.setItem('esiGalleryUpdated', timestamp);
-            console.log('Set esiGalleryUpdated timestamp:', timestamp);
-            
-            // Also trigger a storage event manually for same-window scenarios
-            window.dispatchEvent(new StorageEvent('storage', {
-                key: 'esiGalleryUpdated',
-                newValue: timestamp,
-                oldValue: localStorage.getItem('esiGalleryUpdated'),
-                storageArea: localStorage
-            }));
-        } catch (e) {
-            console.error('Could not update localStorage timestamp:', e);
-        }
-        
-        // If we're on the same page (admin and main site in same window), reload gallery
-        // This handles the case where admin is opened in the same tab
-        if (typeof loadGalleryData === 'function') {
-            console.log('Calling loadGalleryData on current window');
-            setTimeout(() => {
-                loadGalleryData();
-            }, 100);
-        }
-    }
-
     attachGalleryFormListeners() {
-        // Photo form - use a wrapper function to ensure 'this' context
+        // Photo form
         const addPhotoForm = document.getElementById('addPhotoForm');
         if (addPhotoForm) {
             // Remove any existing listeners by cloning (clean slate)
@@ -1539,7 +1544,6 @@ class AdminDashboard {
                 
                 addPhotoForm.addEventListener('submit', handleSubmit);
                 addPhotoForm.dataset.listenerAttached = 'true';
-                addPhotoForm.dataset.handler = 'attached';
                 
                 // Also add direct click handler to button as backup
                 const submitBtn = document.getElementById('addPhotoBtn') || addPhotoForm.querySelector('button[type="submit"]');
@@ -1597,10 +1601,42 @@ class AdminDashboard {
         }
     }
 
-    loadGalleryData() {
-        this.loadGalleryPhotos();
-        this.loadGalleryVideos();
-        this.loadGalleryPress();
+    refreshWelcomePageGallery() {
+        console.log('Refreshing welcome page gallery...');
+        
+        // Check if welcome page is open and refresh gallery
+        if (window.opener && window.opener.loadGalleryData) {
+            console.log('Calling loadGalleryData on opener window');
+            window.opener.loadGalleryData();
+        }
+        
+        // Also try to refresh if using localStorage events
+        try {
+            const timestamp = Date.now().toString();
+            localStorage.setItem('esiGalleryUpdated', timestamp);
+            console.log('Set esiGalleryUpdated timestamp:', timestamp);
+            
+            // Also trigger a storage event manually for same-window scenarios
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'esiGalleryUpdated',
+                newValue: timestamp,
+                oldValue: localStorage.getItem('esiGalleryUpdated'),
+                storageArea: localStorage
+            }));
+        } catch (e) {
+            console.error('Could not update localStorage timestamp:', e);
+        }
+        
+        // If we're on the same page (admin and main site in same window), reload gallery
+        // This handles the case where admin is opened in the same tab
+        if (typeof loadGalleryData === 'function') {
+            console.log('Calling loadGalleryData on current window');
+            setTimeout(() => {
+                if (typeof loadGalleryData === 'function') {
+                    loadGalleryData();
+                }
+            }, 100);
+        }
     }
 
     refreshWelcomePageCompetitions() {
@@ -1962,43 +1998,41 @@ class AdminDashboard {
 
     // Utility methods
     showNotification(message, type = 'info') {
+        // Remove any existing notifications
+        document.querySelectorAll('.notification').forEach(notification => {
+            notification.remove();
+        });
+        
         const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            color: white;
-            font-weight: 500;
-            z-index: 10000;
-            max-width: 400px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s ease;
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas ${this.getNotificationIcon(type)}"></i>
+                <span>${message}</span>
+                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         `;
-
-        const colors = {
-            success: '#27ae60',
-            error: '#e74c3c',
-            warning: '#f39c12',
-            info: '#3498db'
-        };
-
-        notification.style.background = colors[type] || colors.info;
+        
         document.body.appendChild(notification);
-
+        
+        // Auto-remove after 5 seconds
         setTimeout(() => {
             if (notification.parentNode) {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.remove();
-                    }
-                }, 300);
+                notification.remove();
             }
         }, 5000);
+    }
+
+    getNotificationIcon(type) {
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+        return icons[type] || icons.info;
     }
 
     logout(reason = 'User logged out') {
@@ -2037,6 +2071,258 @@ class AdminDashboard {
         }
         
         localStorage.setItem('esiAdminLogs', JSON.stringify(logs));
+    }
+
+    loadActivitiesContent() {
+        const activitiesData = JSON.parse(localStorage.getItem('esiActivities') || '{}');
+        
+        // Load background content
+        if (activitiesData.background) {
+            document.getElementById('backgroundContent').value = activitiesData.background;
+        }
+        
+        // Load objectives
+        if (activitiesData.objectives) {
+            this.loadObjectives(activitiesData.objectives);
+        } else {
+            this.loadDefaultObjectives();
+        }
+        
+        // Load rules
+        if (activitiesData.rules) {
+            if (activitiesData.rules.debate) {
+                document.getElementById('debateRules').value = activitiesData.rules.debate.join('\n');
+            }
+            if (activitiesData.rules.poetry) {
+                document.getElementById('poetryRules').value = activitiesData.rules.poetry.join('\n');
+            }
+            if (activitiesData.rules.speech) {
+                document.getElementById('speechRules').value = activitiesData.rules.speech.join('\n');
+            }
+        } else {
+            this.loadDefaultRules();
+        }
+        
+        // Load schedule
+        if (activitiesData.schedule) {
+            this.loadSchedule(activitiesData.schedule);
+        } else {
+            this.loadDefaultSchedule();
+        }
+    }
+
+    loadDefaultObjectives() {
+        const defaultObjectives = [
+            'Promote awareness of gender equality issues',
+            'Encourage critical thinking and public speaking skills',
+            'Foster dialogue between students from different backgrounds',
+            'Highlight the role of education in achieving gender equality'
+        ];
+        this.loadObjectives(defaultObjectives);
+    }
+
+    loadObjectives(objectives) {
+        const container = document.getElementById('objectivesContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        objectives.forEach((objective, index) => {
+            const objectiveDiv = document.createElement('div');
+            objectiveDiv.className = 'objective-item';
+            objectiveDiv.innerHTML = `
+                <input type="text" value="${objective}" class="objective-input" data-index="${index}">
+                <button class="btn btn-danger btn-small" onclick="removeObjective(${index})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(objectiveDiv);
+        });
+    }
+
+    loadDefaultRules() {
+        const defaultDebateRules = `Team format: 3 students per team
+Time limit: 15 minutes per team
+Topics announced 1 week before
+Judged on argument strength, delivery, and teamwork`;
+        
+        const defaultPoetryRules = `Individual participation
+Original work required
+Time limit: 5 minutes
+Judged on creativity, message, and performance`;
+        
+        const defaultSpeechRules = `Individual participation
+Time limit: 8 minutes
+Topics provided in advance
+Judged on content, delivery, and impact`;
+        
+        document.getElementById('debateRules').value = defaultDebateRules;
+        document.getElementById('poetryRules').value = defaultPoetryRules;
+        document.getElementById('speechRules').value = defaultSpeechRules;
+    }
+
+    loadDefaultSchedule() {
+        const defaultSchedule = [
+            { time: '8:00 AM', event: 'Registration & Welcome' },
+            { time: '9:00 AM', event: 'Opening Ceremony' },
+            { time: '10:00 AM', event: 'Competition Rounds Begin' },
+            { time: '2:00 PM', event: 'Lunch Break' },
+            { time: '3:00 PM', event: 'Final Rounds' },
+            { time: '5:00 PM', event: 'Awards Ceremony' }
+        ];
+        this.loadSchedule(defaultSchedule);
+    }
+
+    loadSchedule(schedule) {
+        const container = document.getElementById('scheduleContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        schedule.forEach((item, index) => {
+            const scheduleDiv = document.createElement('div');
+            scheduleDiv.className = 'schedule-item';
+            scheduleDiv.innerHTML = `
+                <div class="schedule-time">
+                    <input type="text" value="${item.time}" class="time-input" data-index="${index}">
+                </div>
+                <div class="schedule-event">
+                    <input type="text" value="${item.event}" class="event-input" data-index="${index}">
+                </div>
+                <button class="btn btn-danger btn-small" onclick="removeScheduleItem(${index})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(scheduleDiv);
+        });
+    }
+
+    loadHomeContent() {
+        const homeData = JSON.parse(localStorage.getItem('esiHomeContent') || '{}');
+        
+        // Load basic info
+        if (homeData.heroBadge) {
+            document.getElementById('heroBadge').value = homeData.heroBadge;
+        }
+        if (homeData.heroTitle) {
+            document.getElementById('heroTitle').value = homeData.heroTitle;
+        }
+        if (homeData.heroSubtitle) {
+            document.getElementById('heroSubtitle').value = homeData.heroSubtitle;
+        }
+        if (homeData.eventDate) {
+            document.getElementById('eventDate').value = homeData.eventDate;
+        }
+        if (homeData.eventVenue) {
+            document.getElementById('eventVenue').value = homeData.eventVenue;
+        }
+        if (homeData.eventAudience) {
+            document.getElementById('eventAudience').value = homeData.eventAudience;
+        }
+        
+        // Load countdown settings
+        if (homeData.countdownDate) {
+            document.getElementById('countdownDate').value = homeData.countdownDate;
+        }
+        if (homeData.countdownTime) {
+            document.getElementById('countdownTime').value = homeData.countdownTime;
+        }
+        if (homeData.countdownMessage) {
+            document.getElementById('countdownMessage').value = homeData.countdownMessage;
+        }
+        
+        // Load default values if no custom content
+        if (!homeData.heroBadge) {
+            document.getElementById('heroBadge').value = 'ESI 2025';
+        }
+        if (!homeData.heroTitle) {
+            document.getElementById('heroTitle').value = 'Equality Beyond Gender Roles';
+        }
+        if (!homeData.heroSubtitle) {
+            document.getElementById('heroSubtitle').value = 'A Gender Equality Debate, Poetry, and Public Speech Competition';
+        }
+        if (!homeData.eventDate) {
+            document.getElementById('eventDate').value = '2025-09-21';
+        }
+        if (!homeData.eventVenue) {
+            document.getElementById('eventVenue').value = 'Mbogo Mixed Secondary School';
+        }
+        if (!homeData.eventAudience) {
+            document.getElementById('eventAudience').value = 'Open to All Schools';
+        }
+        if (!homeData.countdownDate) {
+            document.getElementById('countdownDate').value = '2025-09-21T00:00';
+        }
+        if (!homeData.countdownTime) {
+            document.getElementById('countdownTime').value = '00:00';
+        }
+        if (!homeData.countdownMessage) {
+            document.getElementById('countdownMessage').value = 'Date has arrived!';
+        }
+        
+        // Update preview
+        this.updatePreview();
+    }
+
+    updatePreview() {
+        // Update basic info preview
+        document.getElementById('previewBadge').textContent = document.getElementById('heroBadge').value || 'ESI 2025';
+        document.getElementById('previewTitle').textContent = document.getElementById('heroTitle').value || 'Equality Beyond Gender Roles';
+        document.getElementById('previewSubtitle').textContent = document.getElementById('heroSubtitle').value || 'A Gender Equality Debate, Poetry, and Public Speech Competition';
+        
+        const eventDate = document.getElementById('eventDate').value;
+        document.getElementById('previewDate').textContent = eventDate ? new Date(eventDate).toLocaleDateString() : 'Select event date';
+        document.getElementById('previewVenue').textContent = document.getElementById('eventVenue').value || 'Mbogo Mixed Secondary School';
+        document.getElementById('previewAudience').textContent = document.getElementById('eventAudience').value || 'Open to All Schools';
+        
+        // Update countdown preview
+        this.updateCountdownPreview();
+    }
+
+    updateCountdownPreview() {
+        const countdownDate = document.getElementById('countdownDate').value;
+        const countdownTime = document.getElementById('countdownTime').value;
+        
+        if (!countdownDate) return;
+        
+        const targetDateTime = new Date(`${countdownDate}T${countdownTime || '00:00'}`).getTime();
+        const now = new Date().getTime();
+        const distance = targetDateTime - now;
+        
+        if (distance > 0) {
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('previewDays').textContent = days.toString().padStart(2, '0');
+            document.getElementById('previewHours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('previewMinutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('previewSeconds').textContent = seconds.toString().padStart(2, '0');
+            
+            document.getElementById('previewCountdownDays').textContent = days.toString().padStart(2, '0');
+            document.getElementById('previewCountdownHours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('previewCountdownMinutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('previewCountdownSeconds').textContent = seconds.toString().padStart(2, '0');
+        } else {
+            const message = document.getElementById('countdownMessage').value || 'Date has arrived!';
+            const previewCountdownTimer = document.getElementById('previewCountdownTimer');
+            if (previewCountdownTimer) {
+                previewCountdownTimer.innerHTML = `<div class="event-passed">${message}</div>`;
+            }
+            
+            document.getElementById('previewDays').textContent = '00';
+            document.getElementById('previewHours').textContent = '00';
+            document.getElementById('previewMinutes').textContent = '00';
+            document.getElementById('previewSeconds').textContent = '00';
+        }
+    }
+
+    // Escape HTML to prevent XSS
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 }
 
@@ -2128,31 +2414,18 @@ function removeThumbnailPreview() {
     }
 }
 
+function removeVideoPreview() {
+    if (window.adminDashboard) {
+        window.adminDashboard.clearGalleryPreviews();
+    }
+}
+
 function removePressImagePreview() {
     if (window.adminDashboard) {
         window.adminDashboard.clearGalleryPreviews();
     }
 }
 
-// Initialize admin dashboard when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Only initialize if we're on the admin page
-    if (window.location.pathname.includes('admin.html') || window.location.href.includes('admin.html')) {
-        console.log('Initializing AdminDashboard...');
-        window.adminDashboard = new AdminDashboard();
-        
-        // Ensure registrations and messages are loaded after a short delay to ensure DOM is fully ready
-        setTimeout(() => {
-            if (window.adminDashboard) {
-                console.log('Reloading registrations and messages to ensure display...');
-                window.adminDashboard.loadRegistrations();
-                window.adminDashboard.loadMessages();
-            }
-        }, 200);
-    }
-});
-
-console.log('ESI Admin Dashboard System loaded successfully!'); 
 // Activities Management Functions
 function switchActivitiesTab(tabName) {
     // Remove active class from all tabs and contents
@@ -2169,79 +2442,16 @@ function switchActivitiesTab(tabName) {
     }
 }
 
-function loadActivitiesContent() {
-    const activitiesData = JSON.parse(localStorage.getItem('esiActivities') || '{}');
-    
-    // Load background content
-    if (activitiesData.background) {
-        document.getElementById('backgroundContent').value = activitiesData.background;
-    }
-    
-    // Load objectives
-    if (activitiesData.objectives) {
-        loadObjectives(activitiesData.objectives);
-    } else {
-        loadDefaultObjectives();
-    }
-    
-    // Load rules
-    if (activitiesData.rules) {
-        if (activitiesData.rules.debate) {
-            document.getElementById('debateRules').value = activitiesData.rules.debate.join('\n');
-        }
-        if (activitiesData.rules.poetry) {
-            document.getElementById('poetryRules').value = activitiesData.rules.poetry.join('\n');
-        }
-        if (activitiesData.rules.speech) {
-            document.getElementById('speechRules').value = activitiesData.rules.speech.join('\n');
-        }
-    } else {
-        loadDefaultRules();
-    }
-    
-    // Load schedule
-    if (activitiesData.schedule) {
-        loadSchedule(activitiesData.schedule);
-    } else {
-        loadDefaultSchedule();
-    }
-}
-
-function loadDefaultObjectives() {
-    const defaultObjectives = [
-        'Promote awareness of gender equality issues',
-        'Encourage critical thinking and public speaking skills',
-        'Foster dialogue between students from different backgrounds',
-        'Highlight the role of education in achieving gender equality'
-    ];
-    loadObjectives(defaultObjectives);
-}
-
-function loadObjectives(objectives) {
-    const container = document.getElementById('objectivesContainer');
-    container.innerHTML = '';
-    
-    objectives.forEach((objective, index) => {
-        const objectiveDiv = document.createElement('div');
-        objectiveDiv.className = 'objective-item';
-        objectiveDiv.innerHTML = `
-            <input type="text" value="${objective}" class="objective-input" data-index="${index}">
-            <button class="btn-danger btn-small" onclick="removeObjective(${index})">
-                <i class="fas fa-trash"></i>
-            </button>
-        `;
-        container.appendChild(objectiveDiv);
-    });
-}
-
 function addObjective() {
     const container = document.getElementById('objectivesContainer');
+    if (!container) return;
+    
     const index = container.children.length;
     const objectiveDiv = document.createElement('div');
     objectiveDiv.className = 'objective-item';
     objectiveDiv.innerHTML = `
         <input type="text" placeholder="Enter new objective..." class="objective-input" data-index="${index}">
-        <button class="btn-danger btn-small" onclick="removeObjective(${index})">
+        <button class="btn btn-danger btn-small" onclick="removeObjective(${index})">
             <i class="fas fa-trash"></i>
         </button>
     `;
@@ -2250,65 +2460,18 @@ function addObjective() {
 
 function removeObjective(index) {
     const container = document.getElementById('objectivesContainer');
+    if (!container) return;
+    
     const items = container.querySelectorAll('.objective-item');
     if (items[index]) {
         items[index].remove();
     }
 }
 
-function loadDefaultRules() {
-    document.getElementById('debateRules').value = `Team format: 3 students per team
-Time limit: 15 minutes per team
-Topics announced 1 week before
-Judged on argument strength, delivery, and teamwork`;
-    
-    document.getElementById('poetryRules').value = `Individual participation
-Original work required
-Time limit: 5 minutes
-Judged on creativity, message, and performance`;
-    
-    document.getElementById('speechRules').value = `Individual participation
-Time limit: 8 minutes
-Topics provided in advance
-Judged on content, delivery, and impact`;
-}
-
-function loadDefaultSchedule() {
-    const defaultSchedule = [
-        { time: '8:00 AM', event: 'Registration & Welcome' },
-        { time: '9:00 AM', event: 'Opening Ceremony' },
-        { time: '10:00 AM', event: 'Competition Rounds Begin' },
-        { time: '2:00 PM', event: 'Lunch Break' },
-        { time: '3:00 PM', event: 'Final Rounds' },
-        { time: '5:00 PM', event: 'Awards Ceremony' }
-    ];
-    loadSchedule(defaultSchedule);
-}
-
-function loadSchedule(schedule) {
-    const container = document.getElementById('scheduleContainer');
-    container.innerHTML = '';
-    
-    schedule.forEach((item, index) => {
-        const scheduleDiv = document.createElement('div');
-        scheduleDiv.className = 'schedule-item';
-        scheduleDiv.innerHTML = `
-            <div class="schedule-time">
-                <input type="text" value="${item.time}" class="time-input" data-index="${index}">
-            </div>
-            <div class="schedule-event">
-                <input type="text" value="${item.event}" class="event-input" data-index="${index}">
-            </div>
-            <button class="btn-danger btn-small" onclick="removeScheduleItem(${index})">
-                <i class="fas fa-trash"></i>
-            </button>
-        `;
-        container.appendChild(scheduleDiv);
-    });
-}
-
 function addScheduleItem() {
     const container = document.getElementById('scheduleContainer');
+    if (!container) return;
+    
     const index = container.children.length;
     const scheduleDiv = document.createElement('div');
     scheduleDiv.className = 'schedule-item';
@@ -2319,7 +2482,7 @@ function addScheduleItem() {
         <div class="schedule-event">
             <input type="text" placeholder="Event description" class="event-input" data-index="${index}">
         </div>
-        <button class="btn-danger btn-small" onclick="removeScheduleItem(${index})">
+        <button class="btn btn-danger btn-small" onclick="removeScheduleItem(${index})">
             <i class="fas fa-trash"></i>
         </button>
     `;
@@ -2328,6 +2491,8 @@ function addScheduleItem() {
 
 function removeScheduleItem(index) {
     const container = document.getElementById('scheduleContainer');
+    if (!container) return;
+    
     const items = container.querySelectorAll('.schedule-item');
     if (items[index]) {
         items[index].remove();
@@ -2335,6 +2500,8 @@ function removeScheduleItem(index) {
 }
 
 function saveActivitiesContent(type) {
+    if (!window.adminDashboard) return;
+    
     const activitiesData = JSON.parse(localStorage.getItem('esiActivities') || '{}');
     
     switch(type) {
@@ -2366,9 +2533,7 @@ function saveActivitiesContent(type) {
     localStorage.setItem('esiActivities', JSON.stringify(activitiesData));
     
     // Show success notification
-    if (window.adminDashboard) {
-        adminDashboard.showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} saved successfully!`, 'success');
-    }
+    window.adminDashboard.showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} saved successfully!`, 'success');
     
     // Trigger welcome page refresh
     try {
@@ -2383,20 +2548,9 @@ function previewActivities() {
     console.log('Current Activities Data:', activitiesData);
     
     if (window.adminDashboard) {
-        adminDashboard.showNotification('Check console for preview data', 'info');
+        window.adminDashboard.showNotification('Check console for preview data', 'info');
     }
 }
-
-// Initialize Activities management when admin dashboard loads
-document.addEventListener('DOMContentLoaded', () => {
-    // Load activities content if we're on the admin page
-    if (window.location.pathname.includes('admin.html')) {
-        setTimeout(() => {
-            loadActivitiesContent();
-        }, 1000);
-    }
-});
-
 
 // Home Section Management Functions
 function switchHomeTab(tabName) {
@@ -2414,122 +2568,9 @@ function switchHomeTab(tabName) {
     }
 }
 
-function formatDateForDisplay(dateString) {
-    if (!dateString) return '';
-    
-    const parsedDate = normalizeDateString(dateString);
-    if (!parsedDate) return dateString;
-    
-    return parsedDate.toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-}
-
-function normalizeDateString(dateString) {
-    if (!dateString) return null;
-    
-    let parsedDate = new Date(dateString);
-    if (isNaN(parsedDate.getTime())) {
-        // Try stripping ordinal suffixes like "21st", "22nd", "23rd", "24th"
-        const cleaned = dateString.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
-        parsedDate = new Date(cleaned);
-    }
-    
-    if (isNaN(parsedDate.getTime())) {
-        return null;
-    }
-    
-    return parsedDate;
-}
-
-function sanitizeLegacyDefaultDate(value) {
-    if (!value) return '';
-    const trimmed = value.trim();
-    // Ignore old hard-coded defaults
-    if (/21(st)?\s+September\s+2025/i.test(trimmed)) return '';
-    if (trimmed === '2025-09-21') return '';
-    return trimmed;
-}
-
-function getDefaultEventDate() {
-    const fallbackDate = new Date();
-    fallbackDate.setDate(fallbackDate.getDate() + 30);
-    return fallbackDate.toISOString().split('T')[0];
-}
-
-function loadHomeContent() {
-    const homeData = JSON.parse(localStorage.getItem('esiHomeContent') || '{}');
-    homeData.eventDate = sanitizeLegacyDefaultDate(homeData.eventDate);
-    homeData.countdownDate = sanitizeLegacyDefaultDate(homeData.countdownDate);
-    
-    // Load basic info
-    if (homeData.heroBadge) {
-        document.getElementById('heroBadge').value = homeData.heroBadge;
-    }
-    if (homeData.heroTitle) {
-        document.getElementById('heroTitle').value = homeData.heroTitle;
-    }
-    if (homeData.heroSubtitle) {
-        document.getElementById('heroSubtitle').value = homeData.heroSubtitle;
-    }
-    if (homeData.eventDate) {
-        const normalized = normalizeDateString(homeData.eventDate);
-        if (normalized) {
-            document.getElementById('eventDate').value = normalized.toISOString().split('T')[0];
-        } else {
-            document.getElementById('eventDate').value = homeData.eventDate;
-        }
-    }
-    if (homeData.eventVenue) {
-        document.getElementById('eventVenue').value = homeData.eventVenue;
-    }
-    if (homeData.eventAudience) {
-        document.getElementById('eventAudience').value = homeData.eventAudience;
-    }
-    
-    // Load countdown settings
-    if (homeData.countdownDate) {
-        document.getElementById('countdownDate').value = homeData.countdownDate;
-    }
-    if (homeData.countdownTime) {
-        document.getElementById('countdownTime').value = homeData.countdownTime;
-    }
-    if (homeData.countdownMessage) {
-        document.getElementById('countdownMessage').value = homeData.countdownMessage;
-    }
-    
-    // Load default values if no custom content
-    if (!homeData.heroBadge) {
-        document.getElementById('heroBadge').value = 'ESI 2025';
-    }
-    if (!homeData.heroTitle) {
-        document.getElementById('heroTitle').value = 'Equality Beyond Gender Roles';
-    }
-    if (!homeData.heroSubtitle) {
-        document.getElementById('heroSubtitle').value = 'A Gender Equality Debate, Poetry, and Public Speech Competition';
-    }
-    
-    const eventDateValue = homeData.eventDate || getDefaultEventDate();
-    document.getElementById('eventDate').value = eventDateValue;
-    
-    if (!homeData.eventVenue) {
-        document.getElementById('eventVenue').value = 'Mbogo Mixed Secondary School';
-    }
-    if (!homeData.eventAudience) {
-        document.getElementById('eventAudience').value = 'Open to All Schools';
-    }
-    
-    document.getElementById('countdownDate').value = homeData.countdownDate || eventDateValue;
-    document.getElementById('countdownTime').value = homeData.countdownTime || '00:00';
-    document.getElementById('countdownMessage').value = homeData.countdownMessage || 'Date has arrived!';
-    
-    // Update preview
-    updatePreview();
-}
-
 function saveHomeContent(type) {
+    if (!window.adminDashboard) return;
+    
     const homeData = JSON.parse(localStorage.getItem('esiHomeContent') || '{}');
     
     switch(type) {
@@ -2551,9 +2592,7 @@ function saveHomeContent(type) {
     localStorage.setItem('esiHomeContent', JSON.stringify(homeData));
     
     // Show success notification
-    if (window.adminDashboard) {
-        adminDashboard.showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} saved successfully!`, 'success');
-    }
+    window.adminDashboard.showNotification(`${type.charAt(0).toUpperCase() + type.slice(1)} saved successfully!`, 'success');
     
     // Trigger welcome page refresh
     try {
@@ -2563,92 +2602,33 @@ function saveHomeContent(type) {
     }
     
     // Update preview
-    updatePreview();
+    if (window.adminDashboard) {
+        window.adminDashboard.updatePreview();
+    }
 }
 
 function updatePreview() {
-    // Update basic info preview
-    document.getElementById('previewBadge').textContent = document.getElementById('heroBadge').value || 'ESI 2025';
-    document.getElementById('previewTitle').textContent = document.getElementById('heroTitle').value || 'Equality Beyond Gender Roles';
-    document.getElementById('previewSubtitle').textContent = document.getElementById('heroSubtitle').value || 'A Gender Equality Debate, Poetry, and Public Speech Competition';
-    
-    const formattedDate = formatDateForDisplay(document.getElementById('eventDate').value);
-    document.getElementById('previewDate').textContent = formattedDate || 'Select event date';
-    document.getElementById('previewVenue').textContent = document.getElementById('eventVenue').value || 'Mbogo Mixed Secondary School';
-    document.getElementById('previewAudience').textContent = document.getElementById('eventAudience').value || 'Open to All Schools';
-    
-    // Update countdown preview
-    updateCountdownPreview();
-}
-
-function updateCountdownPreview() {
-    const countdownDate = document.getElementById('countdownDate').value || document.getElementById('eventDate').value;
-    const countdownTime = document.getElementById('countdownTime').value || '00:00';
-    
-    const previewCountdown = document.getElementById('previewCountdownTimer');
-    if (!countdownDate || !previewCountdown) {
-        return;
-    }
-
-    // Ensure preview countdown structure exists even after message render
-    if (!previewCountdown.querySelector('.countdown-item')) {
-        previewCountdown.innerHTML = `
-            <div class="countdown-item">
-                <span id="previewCountdownDays">00</span>
-                <label>Days</label>
-            </div>
-            <div class="countdown-item">
-                <span id="previewCountdownHours">00</span>
-                <label>Hours</label>
-            </div>
-            <div class="countdown-item">
-                <span id="previewCountdownMinutes">00</span>
-                <label>Minutes</label>
-            </div>
-            <div class="countdown-item">
-                <span id="previewCountdownSeconds">00</span>
-                <label>Seconds</label>
-            </div>
-        `;
-    }
-
-    const targetDateTime = new Date(`${countdownDate}T${countdownTime}`).getTime();
-    const now = new Date().getTime();
-    const distance = targetDateTime - now;
-    
-    if (distance > 0) {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        
-        document.getElementById('previewDays').textContent = days.toString().padStart(2, '0');
-        document.getElementById('previewHours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('previewMinutes').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('previewSeconds').textContent = seconds.toString().padStart(2, '0');
-        
-        document.getElementById('previewCountdownDays').textContent = days.toString().padStart(2, '0');
-        document.getElementById('previewCountdownHours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('previewCountdownMinutes').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('previewCountdownSeconds').textContent = seconds.toString().padStart(2, '0');
-    } else {
-        const message = document.getElementById('countdownMessage').value || 'Date has arrived!';
-        previewCountdown.innerHTML = `<div class="event-passed">${message}</div>`;
-        
-        document.getElementById('previewDays').textContent = '00';
-        document.getElementById('previewHours').textContent = '00';
-        document.getElementById('previewMinutes').textContent = '00';
-        document.getElementById('previewSeconds').textContent = '00';
+    if (window.adminDashboard) {
+        window.adminDashboard.updatePreview();
     }
 }
 
-// Initialize Home Section management when admin dashboard loads
+// Initialize admin dashboard when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Load home content if we're on the admin page
-    if (window.location.pathname.includes('admin.html')) {
+    // Only initialize if we're on the admin page
+    if (window.location.pathname.includes('admin.html') || window.location.href.includes('admin.html')) {
+        console.log('Initializing AdminDashboard...');
+        window.adminDashboard = new AdminDashboard();
+        
+        // Ensure registrations and messages are loaded after a short delay to ensure DOM is fully ready
         setTimeout(() => {
-            loadHomeContent();
-        }, 1000);
+            if (window.adminDashboard) {
+                console.log('Reloading registrations and messages to ensure display...');
+                window.adminDashboard.loadRegistrations();
+                window.adminDashboard.loadMessages();
+            }
+        }, 200);
     }
 });
 
+console.log('ESI Admin Dashboard System loaded successfully!');

@@ -3,60 +3,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESI Admin Login - Erudite Scholars Initiative</title>
+    <title>ESI Admin Login</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shine 3s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .login-logo {
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-logo h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .login-logo p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .login-body {
+            padding: 2.5rem 2rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-with-icon input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .input-with-icon input::placeholder {
+            color: #95a5a6;
+        }
+
+        .login-button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(135deg, #2980b9, #1c6ea4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .login-button i {
+            font-size: 1.2rem;
+        }
+
+        .login-footer {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid #e1e5e9;
+            color: #7f8c8d;
+            font-size: 0.875rem;
+            background: #f8fafc;
+        }
+
+        .login-footer p {
+            margin: 0;
+        }
+
+        .login-error {
+            display: none;
+            background: #ffeaea;
+            color: #e74c3c;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .login-error.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .login-logo h1 {
+                font-size: 2rem;
+            }
+            
+            .login-body {
+                padding: 2rem 1.5rem;
+            }
+            
+            .input-with-icon input {
+                padding: 0.875rem 0.875rem 0.875rem 2.75rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="login-section">
-        <div class="login-container">
+    <div class="login-wrapper">
+        <div class="login-card">
             <div class="login-header">
-                <i class="fas fa-shield-alt"></i>
-                <h2>ESI Admin Access</h2>
-                <p>Erudite Scholars Initiative - Administrative Dashboard</p>
+                <div class="login-logo">
+                    <h1>ESI Admin</h1>
+                    <p>Erudite Scholars Initiative Dashboard</p>
+                </div>
             </div>
             
-            <form id="loginForm" class="login-form">
-                <div class="form-group">
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="username" name="username" placeholder="Username" required>
+            <div class="login-body">
+                <div id="loginError" class="login-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorMessage">Invalid credentials</span>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="password" name="password" placeholder="Password" required>
-                        <button type="button" class="toggle-password" onclick="togglePassword()">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="rememberMe" name="rememberMe">
-                        Remember me for 24 hours
-                    </label>
-                </div>
-                
-                <button type="submit" class="login-btn" id="loginBtn">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Login to Dashboard
-                </button>
-            </form>
+                    
+                    <button type="submit" class="login-button">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login to Dashboard
+                    </button>
+                </form>
+            </div>
             
             <div class="login-footer">
-                <p>Need help? Contact the system administrator</p>
-                <a href="index.html" class="back-link">
-                    <i class="fas fa-arrow-left"></i>
-                    Back to Website
-                </a>
+                <p>© 2025 Erudite Scholars Initiative. Secure Admin Access</p>
             </div>
         </div>
     </div>
 
-    <script src="admin-login.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginError = document.getElementById('loginError');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                
+                // Hide any previous error
+                loginError.classList.remove('show');
+                
+                // Basic validation
+                if (!username || !password) {
+                    showError('Please fill in all fields');
+                    return;
+                }
+                
+                // Show loading state
+                const submitBtn = loginForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+                submitBtn.disabled = true;
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    // For demo purposes - In production, use proper authentication
+                    if (username === 'admin' && password === 'admin123') {
+                        // Create session
+                        const session = {
+                            username: username,
+                            isValid: true,
+                            expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+                        };
+                        
+                        localStorage.setItem('esiAdminSession', JSON.stringify(session));
+                        
+                        // Show success and redirect
+                        submitBtn.innerHTML = '<i class="fas fa-check"></i> Success! Redirecting...';
+                        submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #229954)';
+                        
+                        setTimeout(() => {
+                            window.location.href = 'admin.html';
+                        }, 1000);
+                        
+                    } else {
+                        // Reset button
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        
+                        // Show error
+                        showError('Invalid username or password. Try: admin / admin123');
+                        
+                        // Shake form for emphasis
+                        loginForm.style.animation = 'none';
+                        setTimeout(() => {
+                            loginForm.style.animation = 'shake 0.5s ease';
+                        }, 10);
+                    }
+                }, 1500); // Simulate 1.5 second delay
+            });
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                loginError.classList.add('show');
+                
+                // Auto-hide error after 5 seconds
+                setTimeout(() => {
+                    loginError.classList.remove('show');
+                }, 5000);
+            }
+            
+            // Clear error when user starts typing
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    if (loginError.classList.contains('show')) {
+                        loginError.classList.remove('show');
+                    }
+                });
+            });
+            
+            // Focus on username field on load
+            document.getElementById('username').focus();
+        });
+    </script>
 </body>
-</html> 
+</html>
