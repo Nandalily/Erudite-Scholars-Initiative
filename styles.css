@@ -127,6 +127,9 @@ body {
     background-color: var(--neutral-50);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+      margin: 0;
+     padding-top: 70px; /* match header height */
 }
 
 /* Typography Scale */
@@ -378,9 +381,11 @@ p {
     padding-bottom: 4rem;
     background: linear-gradient(
         135deg,
-        rgba(44, 62, 80, 0.95) 0%,  /* Dark navy instead of blue */
-        rgba(30, 60, 114, 0.9) 100%
+        rgba(3, 9, 70, 0.95) 0%,  /* Dark navy instead of blue */
+        rgba(60, 125, 141, 0.9) 100%
+         /* rgba(30, 60, 114, 0.9) 100% */
     );
+    /* linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%); */
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -440,7 +445,7 @@ p {
     font-size: clamp(2rem, 6vw, 4rem);
     line-height: 1.1;
     margin-bottom: var(--space-4);
-    color: green;
+    color: rgb(248, 249, 249);
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -471,7 +476,7 @@ p {
     font-size: clamp(1.125rem, 3vw, 1.5rem);
     font-weight: 400;
     margin-bottom: var(--space-8);
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(212, 247, 249, 0.9);
     line-height: 1.6;
     max-width: 600px;
     margin-left: auto;
@@ -875,6 +880,7 @@ p {
     gap: var(--space-4);
     margin-bottom: var(--space-4);
     color: #1a1a1a;
+    background-color: #ffffff;
 }
 
 .card-icon {
@@ -1468,6 +1474,9 @@ body {
     color: var(--text-color);
     background: var(--background);
     min-height: 100vh;
+
+      margin: 0;
+     padding-top: 70px; /* match header height */
 }
 
 .container {
@@ -1587,12 +1596,15 @@ a:hover {
 
 /* ===== HEADER & NAVIGATION ===== */
 .header {
-    background: white;
-    /* color: white; */
-    position: sticky;
+    background-color: #ffffff;
+   
+    position: fixed;
+    left: 0;
+    width: 100%;
+     /* position: sticky; */
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(11, 2, 97, 0.15);
     border-bottom: 3px solid var(--primary-color);
     box-shadow: var(--shadow-md);
 }
@@ -1683,7 +1695,8 @@ a:hover {
 }
 
 .dashboard-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+    /* background: linear-gradient(135deg, var(--primary-color), var(--info-color)); */
+    background: #ffffff;
     color: white;
     padding: var(--space-xl);
     border-radius: var(--radius-lg);
@@ -1698,7 +1711,7 @@ a:hover {
 }
 
 .dashboard-subtitle {
-    opacity: 0.9;
+    /* opacity: 0.9; */
     font-size: .8rem;
 }
 
@@ -2529,7 +2542,7 @@ a:hover {
     
     .nav-menu.show {
         transform: translateY(0);
-        opacity: 1;
+        opacity: 0;
         visibility: visible;
     }
     
@@ -2581,6 +2594,7 @@ a:hover {
 @media (max-width: 480px) {
     .container {
         padding: 0 var(--space-sm);
+
     }
     
     .dashboard-header {
@@ -2616,6 +2630,9 @@ a:hover {
     
     body {
         background: white !important;
+
+          margin: 0;
+         padding-top: 70px; /* match header height */
     }
     
     .container {
@@ -3260,7 +3277,7 @@ a:hover {
     
     .nav-menu.show {
         transform: translateY(0);
-        opacity: 1;
+        opacity: 0;
         visibility: visible;
     }
     
@@ -3627,14 +3644,14 @@ a:hover {
 .dashboard-header > p {
     font-size: 1.2rem;
     margin-bottom: 0.25rem;
-    opacity: 0.95;
+    opacity: 0;
     position: relative;
     z-index: 1;
     font-weight: 400;
 }
 
 .dashboard-subtitle {
-    opacity: 0.85;
+    opacity: 0;
     font-size: 1.1rem;
     position: relative;
     z-index: 1;
@@ -3686,7 +3703,7 @@ a:hover {
 
 .status-item .status-label {
     font-size: 0.85rem;
-    opacity: 0.8;
+    opacity: 0;
 }
 
 .status-item .status-value {
@@ -3773,7 +3790,7 @@ a:hover {
     
     .nav-menu.show {
         transform: translateY(0);
-        opacity: 1;
+        opacity: 0;
         visibility: visible;
     }
     
@@ -3838,7 +3855,7 @@ a:hover {
 
 @keyframes slideDown {
     from { transform: translateY(-20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(0); opacity: 0; }
 }
 
 /* Enhanced Global Styles - Mobile First */
@@ -3857,6 +3874,9 @@ body {
     overflow-x: hidden;
     font-size: 1rem;
     min-height: 100vh;
+
+      margin: 0;
+     padding-top: 70px; /* match header height */
 }
 
 /* Fluid, scalable media */
@@ -3915,6 +3935,9 @@ img, picture, video, canvas, svg {
     body {
         overflow-x: hidden;
         width: 100%;
+
+          margin: 0;
+         padding-top: 70px; /* match header height */
     }
     
     /* Mobile navigation adjustments */
@@ -9437,6 +9460,9 @@ input:focus, textarea:focus, select:focus {
     font-size: 1.5rem;
     text-align: center;
 }
+bold{
+    color: #f39c12;
+}
 
 .sdgs-intro p {
     color: #666;
@@ -10982,6 +11008,9 @@ body {
     overflow-x: hidden;
     font-size: 1rem;
     min-height: 100vh;
+
+      margin: 0;
+     padding-top: 70px; /* match header height */
 }
 
 /* Fluid, scalable media */
@@ -11040,6 +11069,9 @@ img, picture, video, canvas, svg {
     body {
         overflow-x: hidden;
         width: 100%;
+
+          margin: 0;
+         padding-top: 70px; /* match header height */
     }
  
     /* Ensure mobile menu is properly styled */
@@ -12869,13 +12901,13 @@ input:focus, textarea:focus, select:focus {
 
 .footer-section h3,
 .footer-section h4 {
-    color: #ffd700;
+    color: white;
     margin-bottom: 0.6rem;
     font-size: 1.2rem;
 }
 
 .footer-section p {
-    color: #e0e0e0;
+    color: white;
     line-height: 1.6;
     margin-bottom: 0.6rem;
 }
@@ -13125,6 +13157,7 @@ input:focus, textarea:focus, select:focus {
     margin-bottom: 1.5rem;
     position: relative;
     z-index: 2;
+    background-color: #ffffff
 }
 
 .dashboard-header h2 {
@@ -13133,6 +13166,7 @@ input:focus, textarea:focus, select:focus {
     font-size: 2.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     animation: adminSlideInDown 1s ease-out;
+    background-color: #ffffff
 }
 
 .dashboard-header p {
@@ -17681,6 +17715,9 @@ input:focus, textarea:focus, select:focus {
     body {
         font-size: 12pt !important;
         line-height: 1.4 !important;
+
+          margin: 0;
+         padding-top: 70px; /* match header height */
     }
     
     .container {
@@ -17718,6 +17755,9 @@ input:focus, textarea:focus, select:focus {
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
+
+      margin: 0;
+     padding-top: 70px; /* match header height */
 }
 
 /* Light Mode Cards */
