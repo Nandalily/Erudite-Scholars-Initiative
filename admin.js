@@ -66,6 +66,9 @@ class AdminDashboard {
         this.setupSessionTimeout(session.expiresAt);
         return true;
     }
+    rerefreshRegistrations(){
+        location.reload();
+    }
 
     getSession() {
         console.log('getSession called');
